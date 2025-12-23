@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "name": "develop",
+            "type": "dart",
+            "request": "launch",
+            "program": "lib/main.dart",
+            "args": [
+                "--android-skip-build-dependency-validation"
+            ],
+            "flutterMode": "debug"
+        },
+        {
+            "name": "production",
+            "type": "dart",
+            "request": "launch",
+            "program": "lib/main.dart",
+            "args": [
+                "--android-skip-build-dependency-validation"
+            ],
+            "flutterMode": "release"
+        }
+    ]
+}

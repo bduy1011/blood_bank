@@ -1,0 +1,1 @@
+extension IntExt on double {}

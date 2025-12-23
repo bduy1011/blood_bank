@@ -1,0 +1,135 @@
+{
+  "project_info": {
+    "project_number": "633135425894",
+    "firebase_url": "https://blood-bank-8d0ed-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "blood-bank-8d0ed",
+    "storage_bucket": "blood-bank-8d0ed.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:633134535894:android:65379frtgt80c23f487",
+        "android_client_info": {
+          "package_name": "com.blood.choray"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "633192325894-4nm8tonrtgrl50vubm7fk7906n4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "xxxxxxxxxxxxxxxxxxx"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "633192325894-4nm8ton5435530vubm7fk7906n4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "633192325894-9md794f3rgrkpfgnp7lik1k408q6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.blood.choray"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:63319354:android:ad80fec1a39f10e723f487",
+        "android_client_info": {
+          "package_name": "com.blood.donation.choray"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "633192325894-4nm8ton94e67657bm7fk7906n4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "xxxxxxxxxxxxxxxxxxxxxxxxxx"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "633192325894-4nm8ton94el34535fk7906n4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "633192325894-9md794f3ergerfgnp7lik1k408q6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.blood.choray"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:633192325894:android:a8ffcaerge3f487",
+        "android_client_info": {
+          "package_name": "com.huyethocchoray.blood"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "633192325894-bps5jb4o5regar.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.huyethocchoray.blood",
+            "certificate_hash": "30b4f11d56bergerbcffda9abcf88b8"
+          }
+        },
+        {
+          "client_id": "633192325894-t6ac8ergergre7obj9d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.huyethocchoray.blood",
+            "certificate_hash": "b81620abc8e5d2febregerg0d46e9eacf68"
+          }
+        },
+        {
+          "client_id": "633192325894-4nm8ton94eljv5ergrgfk7906n4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "xxxxxxxxxxxxxxxxxxxxxxx"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "633192325894-4nm8ton94e435435m7fk7906n4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "633192325894-9md794f3fitngergerik1k408q6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.blood.choray"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
