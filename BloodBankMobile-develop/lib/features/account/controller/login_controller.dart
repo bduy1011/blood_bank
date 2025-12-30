@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:blood_donation/base/base_view/base_view.dart';
-import 'package:blood_donation/core/localization/app_locale.dart';
 import 'package:blood_donation/models/authentication.dart';
 import 'package:blood_donation/utils/app_utils.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +8,8 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../app/config/routes.dart';
+import '../../../models/citizen.dart';
+import '../../scan_qr_code/scan_qr_code_screen.dart';
 
 class LoginController extends BaseModelStateful {
   ///
@@ -142,5 +143,54 @@ class LoginController extends BaseModelStateful {
       AppUtils.instance.showError("$e");
     }
     AppUtils.instance.hideLoading();
+  }
+
+  // Quét QR code từ căn cước công dân để đăng nhập
+  // Sử dụng giao diện quét QR cũ (ScanQrCodeScreen) với overlay đẹp
+  // Parse và map vào model Citizen, validate và prefill username
+  Future<bool> scanQRCodeForLogin(BuildContext context) async {
+    try {
+      var rs = await Get.to(
+        () => ScanQrCodeScreen(
+          title: "Quét mã QR CCCD/Căn cước",
+          onScan: (code) async {
+            try {
+              // Parse QR code thành Citizen model
+              final citizen = Citizen.fromQRCode(code);
+
+              // Validate CCCD
+              if (!citizen.isValidIdCard()) {
+                AppUtils.instance.showMessage(
+                  "Số CCCD/Căn cước không hợp lệ (phải là 9 hoặc 12 ký tự số)",
+                  context: Get.context,
+                );
+                return false;
+              }
+
+              // Prefill username với số CCCD
+              usernameController.text = citizen.idCard;
+
+              AppUtils.instance.showToast("Đã lấy số CCCD từ QR code thành công!");
+              return true;
+            } catch (e) {
+              log("parseQRCode()", error: e);
+              AppUtils.instance.showToast("Lỗi khi đọc thông tin từ QR code!");
+              return false;
+            }
+          },
+        ),
+      );
+      if (rs == "ok") {
+        return true;
+      }
+      if (rs == "cancel") {
+        return false;
+      }
+      return false;
+    } catch (e, t) {
+      log("scanQRCodeForLogin()", error: e, stackTrace: t);
+      AppUtils.instance.showToast("Lỗi khi quét QR code!");
+      return false;
+    }
   }
 }

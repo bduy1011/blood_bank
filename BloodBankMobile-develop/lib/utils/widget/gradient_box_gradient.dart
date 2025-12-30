@@ -310,12 +310,12 @@ class GradientShadowBoxDecoration extends Decoration {
 
   @override
   int get hashCode {
-    return hashValues(
+    return Object.hash(
       color,
       image,
       border,
       borderRadius,
-      hashList(boxShadow),
+      Object.hashAll(boxShadow ?? const <BoxShadow>[]),
       gradient,
       shape,
     );

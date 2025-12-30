@@ -112,7 +112,10 @@ class _RegisterPageState
                           const SizedBox(
                             height: 20,
                           ),
-                          TextFormField(
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextFormField(
                             controller: controller.usernameRegisterController,
                             maxLength: 12,
                             keyboardType: TextInputType.number,
@@ -135,6 +138,32 @@ class _RegisterPageState
                                     .translate(context),
                               ),
                             ]),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              // Nút quét QR nhỏ
+                              Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  onTap: () {
+                                    controller.scanQRCodeForRegistration(context);
+                                  },
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: const Color.fromARGB(255, 229, 59, 59).withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: const Icon(
+                                      Icons.qr_code_scanner,
+                                      size: 24,
+                                      color: Color.fromARGB(255, 229, 59, 59),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                           const SizedBox(
                             height: 20,
@@ -219,7 +248,50 @@ class _RegisterPageState
                             ]),
                           ),
                           const VSpacing(
-                            spacing: 40,
+                            spacing: 30,
+                          ),
+                          // Nút chữ ký số
+                          ConstrainedBox(
+                            constraints:
+                                const BoxConstraints(minWidth: double.infinity),
+                            child: OutlinedButton(
+                                onPressed: () {
+                                  controller.mockDigitalSignature(context);
+                                },
+                                style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(
+                                    color: Color.fromARGB(255, 229, 59, 59),
+                                    width: 1.5,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 15,
+                                    horizontal: 40,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      Icons.verified_user,
+                                      color: Color.fromARGB(255, 229, 59, 59),
+                                      size: 20,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      "Chữ ký số",
+                                      style: context.myTheme.textThemeT1.title
+                                          .copyWith(
+                                        color: const Color.fromARGB(255, 229, 59, 59),
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                          ),
+                          const VSpacing(
+                            spacing: 20,
                           ),
                           ConstrainedBox(
                             constraints:

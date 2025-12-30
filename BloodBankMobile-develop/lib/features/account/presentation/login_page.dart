@@ -273,8 +273,11 @@ class _LoginPageState extends BaseViewStateful<LoginPage, LoginController> {
     );
   }
 
-  TextFormField buildUserName(BuildContext context) {
-    return TextFormField(
+  Widget buildUserName(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: TextFormField(
       controller: controller.usernameController,
       decoration: InputDecoration(
         focusedBorder: const UnderlineInputBorder(),
@@ -295,6 +298,32 @@ class _LoginPageState extends BaseViewStateful<LoginPage, LoginController> {
                   AppLocale.formRequiredUsernameError.translate(context)),
         ],
       ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        // Nút quét QR nhỏ
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () {
+              controller.scanQRCodeForLogin(context);
+            },
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 229, 59, 59).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(
+                Icons.qr_code_scanner,
+                size: 24,
+                color: Color.fromARGB(255, 229, 59, 59),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
