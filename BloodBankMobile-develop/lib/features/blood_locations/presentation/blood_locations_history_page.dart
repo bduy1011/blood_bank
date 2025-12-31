@@ -160,7 +160,7 @@ class _BloodLocationsHistoryPageState extends BaseViewStateful<
           children: [
             Column(
               children: [
-                Text("Lần $index",
+                Text("${AppLocale.time.translate(context)} $index",
                     style: const TextStyle(
                         fontSize: 13,
                         color: Colors.grey,
@@ -389,11 +389,11 @@ class _BloodLocationsHistoryPageState extends BaseViewStateful<
           child: RichText(
             textAlign: TextAlign.center,
             text: TextSpan(
-              text: 'Cập nhật CCCD/Căn cước ',
+              text: '${AppLocale.updateIdCard.translate(context)} ',
               style: context.myTheme.textThemeT1.body,
               children: [
                 TextSpan(
-                  text: 'Tại đây',
+                  text: AppLocale.here.translate(context),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () async {
                       ///
@@ -403,8 +403,8 @@ class _BloodLocationsHistoryPageState extends BaseViewStateful<
                   style: context.myTheme.textThemeT1.body.copyWith(
                       fontWeight: FontWeight.w500, color: AppColor.mainColor),
                 ),
-                const TextSpan(
-                  text: ' để xem lịch sử hiến máu của bạn.',
+                TextSpan(
+                  text: AppLocale.toViewDonationHistory.translate(context),
                 )
               ],
             ),
@@ -421,7 +421,7 @@ class _BloodLocationsHistoryPageState extends BaseViewStateful<
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30),
         child: Text(
-          'Không có dữ liệu${controller.startDate?.ddmmyyyy != null ? " từ ngày ${controller.startDate?.ddmmyyyy}" : ""}${controller.endDate?.ddmmyyyy != null ? " đến ngày  ${controller.endDate?.ddmmyyyy}" : ""}',
+          '${AppLocale.noData.translate(context)}${controller.startDate?.ddmmyyyy != null ? " ${AppLocale.fromDate.translate(context)} ${controller.startDate!.ddmmyyyy}" : ""}${controller.endDate?.ddmmyyyy != null ? " ${AppLocale.toDay.translate(context)} ${controller.endDate!.ddmmyyyy}" : ""}',
           style: Get.context?.myTheme.textThemeT1.body,
           textAlign: TextAlign.center,
         ),

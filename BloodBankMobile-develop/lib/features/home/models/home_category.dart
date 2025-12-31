@@ -1,3 +1,6 @@
+import 'package:blood_donation/core/localization/app_locale.dart';
+import 'package:flutter/material.dart';
+
 enum HomeCategory {
   // book,
   registerBuyBlood, // đăng ký nhượng máu
@@ -14,42 +17,28 @@ enum HomeCategory {
   // statistics,
   homeManagement;
 
-  String get title {
+  String title(BuildContext context) {
     switch (this) {
       case HomeCategory.registerBuyBlood:
-        // return AppLocale.registerBuyBlood;
-        return "Đăng ký\nnhượng máu";
+        return AppLocale.registerBuyBloodShort.translate(context);
       case HomeCategory.historyRegisterBuyBlood:
-        // return AppLocale.registerBuyBlood;
-        return "Lịch sử ĐK\nnhượng máu";
+        return AppLocale.historyRegisterBuyBlood.translate(context);
       case HomeCategory.registerDonateBlood:
-        // return AppLocale.registerDonateBlood;
-        return "Đăng ký\nhiến máu";
+        return AppLocale.registerDonateBlood.translate(context);
       case HomeCategory.bloodDonationSchedule:
-        // return AppLocale.bloodDonationSchedule;
-        return "Lịch\nhiến máu";
+        return AppLocale.bloodDonationScheduleShort.translate(context);
       case HomeCategory.bloodDonationHistory:
-        // return AppLocale.bloodDonationHistory;
-        return "Lịch sử\nhiến máu";
+        return AppLocale.bloodDonationHistoryShort.translate(context);
       case HomeCategory.bloodDonationRegister:
-        return "Lịch sử\nđ.ký hiến máu";
-      // return AppLocale.bloodDonationRegister;
-      // case HomeCategory.bloodUsers:
-      //   return AppLocale.homeBloodUsers;
-      // case HomeCategory.statistics:
-      //   return AppLocale.homeStatictics;
+        return AppLocale.bloodDonationRegisterShort.translate(context);
       case HomeCategory.approveBuyBlood:
-        return "Duyệt YC\nnhượng máu";
-      // return AppLocale.approveBuyBlood;
+        return AppLocale.approveBuyBloodRequest.translate(context);
       case HomeCategory.homeManagement:
-        return "Quản lý";
-      // return AppLocale.homeManagement;
+        return AppLocale.homeManagement.translate(context);
       case HomeCategory.questionAndAnswer:
-        return "Hỏi - đáp";
-      // return AppLocale.questionAndAnswer;
+        return AppLocale.questionAndAnswer.translate(context);
       case HomeCategory.feedbackSupport:
-        // return AppLocale.feedbackSupport;
-        return "Liên hệ\nhỗ trợ";
+        return AppLocale.contactSupport.translate(context);
     }
   }
 

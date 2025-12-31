@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:blood_donation/core/localization/app_locale.dart';
 import 'package:blood_donation/features/account/presentation/set_password%20copy.dart';
 import 'package:blood_donation/utils/extension/getx_extension.dart';
 import 'package:flutter/material.dart';
@@ -92,7 +93,7 @@ class ConfirmOtpController extends BaseModelStateful {
     if (isAuthenticated != null) {
       AppUtils.instance.showError(isAuthenticated);
     } else {
-      AppUtils.instance.showToast("Gửi OTP thành c");
+      AppUtils.instance.showToast(AppLocale.sendOtpSuccess.translate(Get.context!));
     }
     AppUtils.instance.hideLoading();
   }

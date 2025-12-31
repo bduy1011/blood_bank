@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:blood_donation/base/base_view/base_view.dart';
+import 'package:blood_donation/core/localization/app_locale.dart';
 import 'package:blood_donation/models/authentication.dart';
 import 'package:blood_donation/utils/app_utils.dart';
 import 'package:flutter/material.dart';
@@ -152,7 +153,7 @@ class LoginController extends BaseModelStateful {
     try {
       var rs = await Get.to(
         () => ScanQrCodeScreen(
-          title: "Quét mã QR CCCD/Căn cước",
+          title: AppLocale.scanQRCCCD.translate(context),
           onScan: (code) async {
             try {
               // Parse QR code thành Citizen model
@@ -170,11 +171,11 @@ class LoginController extends BaseModelStateful {
               // Prefill username với số CCCD
               usernameController.text = citizen.idCard;
 
-              AppUtils.instance.showToast("Đã lấy số CCCD từ QR code thành công!");
+              AppUtils.instance.showToast(AppLocale.qrCodeReadSuccess.translate(context));
               return true;
             } catch (e) {
               log("parseQRCode()", error: e);
-              AppUtils.instance.showToast("Lỗi khi đọc thông tin từ QR code!");
+              AppUtils.instance.showToast(AppLocale.qrCodeReadError.translate(context));
               return false;
             }
           },
@@ -189,7 +190,7 @@ class LoginController extends BaseModelStateful {
       return false;
     } catch (e, t) {
       log("scanQRCodeForLogin()", error: e, stackTrace: t);
-      AppUtils.instance.showToast("Lỗi khi quét QR code!");
+      AppUtils.instance.showToast(AppLocale.qrScanError.translate(context));
       return false;
     }
   }

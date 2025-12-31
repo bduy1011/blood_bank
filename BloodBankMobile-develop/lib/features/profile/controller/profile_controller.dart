@@ -1,5 +1,6 @@
 import 'package:blood_donation/app/app_util/enum.dart';
 import 'package:blood_donation/base/base_view/base_view.dart';
+import 'package:blood_donation/core/localization/app_locale.dart';
 import 'package:blood_donation/utils/extension/getx_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -67,11 +68,11 @@ class ProfileController extends BaseModelStateful {
 
     ///
     if (!cccd.isNum || !(cccd.length == 12 || cccd.length == 9)) {
-      AppUtils.instance.showToast("CCCD/Căn cước không đúng định dạng!");
+      AppUtils.instance.showToast(AppLocale.invalidIdCard.translate(Get.context!));
       return;
     }
     if (!phoneNumber.isNum || phoneNumber.length != 10) {
-      AppUtils.instance.showToast("Số điện thoại không đúng định dạng!");
+      AppUtils.instance.showToast(AppLocale.invalidPhone.translate(Get.context!));
       return;
     }
 
@@ -116,7 +117,7 @@ class ProfileController extends BaseModelStateful {
 
         await backendProvider.saveAuthentication(appCenter.authentication!);
 
-        AppUtils.instance.showToast("Cập nhật tài khoản thành công");
+        AppUtils.instance.showToast(AppLocale.updateAccountSuccess.translate(Get.context!));
         hideLoading();
         refresh();
         Get.findOrNull<HomeController>()?.onRefresh();
@@ -129,12 +130,12 @@ class ProfileController extends BaseModelStateful {
         return;
       }
       AppUtils.instance
-          .showToast("Cập nhật tài khoản thất bại\n${response.message ?? ""}");
+          .showToast("${AppLocale.updateAccountFailed.translate(Get.context!)}\n${response.message ?? ""}");
     } catch (e, t) {
       print(e);
       print(t);
       // TODO
-      AppUtils.instance.showToast("Cập nhật tài khoản thất bại");
+      AppUtils.instance.showToast(AppLocale.updateAccountFailed.translate(Get.context!));
     }
     hideLoading();
   }
@@ -178,7 +179,7 @@ class ProfileController extends BaseModelStateful {
   Future<bool> scanQRCode() async {
     var rs = await Get.to(
       () => ScanQrCodeScreen(
-        title: "Quét mã QR CCCD/Căn cước",
+        title: AppLocale.scanQRCCCD.translate(context),
         onScan: (code) async {
           //
           var ls = code.split("|");

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:blood_donation/base/base_view/base_view.dart';
+import 'package:blood_donation/core/localization/app_locale.dart';
 import 'package:blood_donation/utils/extension/context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -118,9 +119,9 @@ class HistoryRegisterBuyBloodController extends BaseModelStateful {
         if (response.status == 200) {
           historys.remove(item);
           refresh();
-          AppUtils.instance.showToast("Hủy yêu cầu nhượng máu thành công");
+          AppUtils.instance.showToast(AppLocale.cancelBuyBloodSuccess.translate(Get.context!));
         } else {
-          AppUtils.instance.showToast("Hủy yêu cầu nhượng máu thất bại");
+          AppUtils.instance.showToast(AppLocale.cancelBuyBloodFailed.translate(Get.context!));
         }
       } catch (e, s) {
         log("deleteItem()", error: e, stackTrace: s);

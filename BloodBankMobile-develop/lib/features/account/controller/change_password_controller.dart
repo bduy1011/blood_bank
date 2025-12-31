@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 
 import '../../../app/config/routes.dart';
 import '../../../base/base_view/base_view.dart';
+import '../../../core/localization/app_locale.dart';
 import '../../../utils/app_utils.dart';
 
 class ChangePasswordController extends BaseModelStateful {
@@ -56,17 +57,18 @@ class ChangePasswordController extends BaseModelStateful {
     var confirmPassword = confirmPasswordController.text;
     var oldPassword = oldPasswordController.text;
 
+    final context = Get.context!;
     if (oldPassword.trim().isEmpty) {
-      AppUtils.instance.showMessage("Chưa nhập mật khẩu cũ");
+      AppUtils.instance.showMessage(AppLocale.notEnterOldPassword.translate(context));
       return;
     }
     if (password.trim().isEmpty) {
-      AppUtils.instance.showMessage("Chưa nhập mật khẩu");
+      AppUtils.instance.showMessage(AppLocale.notEnterPassword.translate(context));
       return;
     }
     if (password.trim() != confirmPassword.trim()) {
       AppUtils.instance
-          .showMessage("Mật khẩu và xác nhận mật khẩu không giống nhau");
+          .showMessage(AppLocale.passwordNotMatch.translate(context));
       return;
     }
 
@@ -87,16 +89,16 @@ class ChangePasswordController extends BaseModelStateful {
         // await appCenter.backendProvider.saveAuthentication(authenticated!);
         // autoGotoHomePage();
 
-        await AppUtils.instance.showMessage("Thay đổi mật khẩu thành công");
+        await AppUtils.instance.showMessage(AppLocale.changePasswordSuccess.translate(context));
         Get.back();
         return;
       }
       AppUtils.instance
-          .showMessage("Thay đổi mật khẩu thất bại\n${response.message}");
+          .showMessage("${AppLocale.changePasswordFailed.translate(context)}\n${response.message}");
     } catch (e, t) {
       log("setPassword()", error: e, stackTrace: t);
       // TODO
-      AppUtils.instance.showMessage("Thay đổi mật khẩu thất bại");
+      AppUtils.instance.showMessage(AppLocale.changePasswordFailed.translate(context));
     }
     hideLoading();
   }

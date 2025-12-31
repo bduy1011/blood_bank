@@ -196,7 +196,7 @@ class _BloodHistoryFilterState extends State<BloodHistoryFilter> {
             ),
           ),
           child: Text(
-            "Áp dụng",
+            AppLocale.apply.translate(context),
             style:
                 context.myTheme.textThemeT1.title.copyWith(color: Colors.white),
           )),

@@ -1,3 +1,4 @@
+import 'package:blood_donation/core/localization/app_locale.dart';
 import 'package:blood_donation/utils/extension/context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -148,8 +149,8 @@ class _SignaturePadPageState extends State<SignaturePadPage> {
                         onPressed: () async {
                           if (_controller.isEmpty) {
                             Get.snackbar(
-                              "Thông báo",
-                              "Vui lòng ký tên trước khi xác nhận",
+                              AppLocale.notification.translate(context),
+                              AppLocale.pleaseSignBeforeConfirm.translate(context),
                               snackPosition: SnackPosition.BOTTOM,
                               backgroundColor: Colors.red,
                               colorText: Colors.white,
@@ -163,8 +164,8 @@ class _SignaturePadPageState extends State<SignaturePadPage> {
                               Get.back(result: signatureBytes);
                             } else {
                               Get.snackbar(
-                                "Lỗi",
-                                "Không thể lưu chữ ký",
+                                AppLocale.error.translate(context),
+                                AppLocale.cannotSaveSignature.translate(context),
                                 snackPosition: SnackPosition.BOTTOM,
                                 backgroundColor: Colors.red,
                                 colorText: Colors.white,
@@ -172,8 +173,8 @@ class _SignaturePadPageState extends State<SignaturePadPage> {
                             }
                           } catch (e) {
                             Get.snackbar(
-                              "Lỗi",
-                              "Có lỗi xảy ra: $e",
+                              AppLocale.error.translate(context),
+                              "${AppLocale.errorOccurred.translate(context)} $e",
                               snackPosition: SnackPosition.BOTTOM,
                               backgroundColor: Colors.red,
                               colorText: Colors.white,
@@ -197,7 +198,7 @@ class _SignaturePadPageState extends State<SignaturePadPage> {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              "Xác nhận",
+                              AppLocale.confirm.translate(context),
                               style: context.myTheme.textThemeT1.title.copyWith(
                                 color: Colors.white,
                               ),

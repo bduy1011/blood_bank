@@ -1,4 +1,5 @@
 import 'package:blood_donation/base/base_view/base_model_stateful.dart';
+import 'package:blood_donation/core/localization/app_locale.dart';
 import 'package:blood_donation/models/feedback_respose.dart';
 import 'package:blood_donation/utils/app_utils.dart';
 import 'package:flutter/material.dart';
@@ -84,7 +85,7 @@ class FeedbackController extends BaseModelStateful {
       var data = await appCenter.backendProvider.createGopY(body: body);
       hideLoading();
       if (data.status == 200) {
-        AppUtils.instance.showToast("Gửi thành công!");
+        AppUtils.instance.showToast(AppLocale.sendSuccess.translate(Get.context!));
         Get.back();
       } else {
         AppUtils.instance.showToast("${data.message}");
@@ -104,7 +105,7 @@ class FeedbackController extends BaseModelStateful {
     } else {
       ///
       await AppUtils.instance.showMessage(
-        "Vui lòng nhập cập nhật thông tin cá nhân trước khi gửi phản hồi!",
+        AppLocale.pleaseUpdatePersonalInfoBeforeFeedback.translate(Get.context!),
         context: Get.context,
       );
       Get.offNamed(Routes.profile);

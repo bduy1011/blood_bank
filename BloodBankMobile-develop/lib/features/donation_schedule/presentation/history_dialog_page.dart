@@ -237,7 +237,7 @@ class _HistoryDialogPageState
                   ProcessWebviewDialog.instance
                       .openGoogleMapRoadToUrlAddress(item.googleMapLink ?? "");
                 } else {
-                  AppUtils.instance.showToast("Không tìm thấy đường đi");
+                  AppUtils.instance.showToast(AppLocale.cannotFindRoute.translate(context));
                 }
               },
               child: Container(
@@ -350,7 +350,7 @@ class _HistoryDialogPageState
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30),
         child: Text(
-          'Không có dữ liệu từ ngày ${controller.startDate?.ddmmyyyy} đến ngày  ${controller.endDate?.ddmmyyyy}',
+          '${AppLocale.noData.translate(context)} ${AppLocale.fromToDate.translate(context).replaceAll('{fromDate}', controller.startDate?.ddmmyyyy ?? '').replaceAll('{toDate}', controller.endDate?.ddmmyyyy ?? '')}',
           style: Get.context?.myTheme.textThemeT1.body,
           textAlign: TextAlign.center,
         ),

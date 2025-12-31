@@ -1,7 +1,9 @@
 import 'dart:developer';
 
 import 'package:blood_donation/base/base_view/base_view.dart';
+import 'package:blood_donation/core/localization/app_locale.dart';
 import 'package:blood_donation/utils/app_utils.dart';
+import 'package:get/get.dart';
 import 'package:in_app_review/in_app_review.dart';
 
 class SettingController extends BaseModelStateful {
@@ -32,18 +34,14 @@ class SettingController extends BaseModelStateful {
   }
 
   void deleteAccount() async {
-    // backendProvider.logout();
-    // print(appCenter.authentication?.toJson());
-
-    ///
-    // String? password;
+    final context = Get.context!;
     var rs = await AppUtils.instance.showMessageConfirm(
-      "Xác nhận xóa tài khoản",
-      "Tài khoản của bạn sẽ bị xóa\nvĩnh viễn",
+      AppLocale.confirmDeleteAccount.translate(context),
+      AppLocale.deleteAccountMessage.translate(context),
+      context: context,
     );
 
     if (rs == true) {
-// ///
       try {
         showLoading();
         var response = await backendProvider.deleteAccount(
@@ -51,15 +49,14 @@ class SettingController extends BaseModelStateful {
         );
         if (response.status == 200) {
           backendProvider.logout();
-          AppUtils.instance.showToast("Xóa tài khoản thành công");
+          AppUtils.instance.showToast(AppLocale.deleteAccountSuccess.translate(context));
           hideLoading();
           return;
         }
-        AppUtils.instance.showToast("Xóa tài khoản thất bại");
+        AppUtils.instance.showToast(AppLocale.deleteAccountFailed.translate(context));
       } catch (e, t) {
         log("deleteAccount()", error: e, stackTrace: t);
-        // TODO
-        AppUtils.instance.showToast("Xóa tài khoản thất bại");
+        AppUtils.instance.showToast(AppLocale.deleteAccountFailed.translate(context));
       }
       hideLoading();
     }
@@ -76,5 +73,9 @@ class SettingController extends BaseModelStateful {
       // TODO
       print(e);
     }
+  }
+
+  void changeLanguage(AppLanguage language) {
+    localization.translate(language.languageCode);
   }
 }

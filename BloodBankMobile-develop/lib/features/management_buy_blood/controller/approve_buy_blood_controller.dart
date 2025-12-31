@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:blood_donation/base/base_view/base_view.dart';
+import 'package:blood_donation/core/localization/app_locale.dart';
 import 'package:blood_donation/utils/extension/context_ext.dart';
 import 'package:blood_donation/utils/extension/datetime_extension.dart';
 import 'package:flutter/material.dart';
@@ -318,8 +319,8 @@ class ApproveBuyBloodController extends BaseModelStateful {
 
     if (totalApprove <= 0) {
       await AppUtils.instance.showMessageConfirmCancel(
-        "Thông báo",
-        "Vui lòng nhập số lượng duyệt",
+        AppLocale.notificationTitle.translate(Get.context!),
+        AppLocale.pleaseEnterApprovalQuantity.translate(Get.context!),
         context: Get.context,
       );
       return;
@@ -374,7 +375,7 @@ class ApproveBuyBloodController extends BaseModelStateful {
           .approveGiaoDich(giaoDichTemplate.giaoDichId?.toString() ?? "", body);
       hideLoading();
       if (response.status == 200) {
-        AppUtils.instance.showToast("Duyệt yêu cầu nhượng máu thành công.");
+        AppUtils.instance.showToast(AppLocale.approveBuyBloodSuccess.translate(Get.context!));
 
         Get.back(result: {"approve": true});
       } else {
@@ -441,7 +442,7 @@ class ApproveBuyBloodController extends BaseModelStateful {
             giaoDichTemplate.giaoDichId?.toString() ?? "", body);
         hideLoading();
         if (response.status == 200) {
-          AppUtils.instance.showToast("Từ chối yêu cầu nhượng máu thành công.");
+          AppUtils.instance.showToast(AppLocale.rejectBuyBloodSuccess.translate(Get.context!));
 
           Get.back(result: {"approve": false});
         } else {

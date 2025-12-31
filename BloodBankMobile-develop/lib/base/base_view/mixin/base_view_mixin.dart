@@ -1,4 +1,5 @@
 import 'package:blood_donation/app/app_util/app_center.dart';
+import 'package:blood_donation/core/localization/app_locale.dart';
 import 'package:blood_donation/utils/app_utils.dart';
 import 'package:blood_donation/utils/extension/context_ext.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +42,7 @@ mixin BaseViewMixin<T extends BaseModel> {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30),
         child: Text(
-          'Không có dữ liệu',
+          AppLocale.noData.translate(Get.context!),
           style: Get.context?.myTheme.textThemeT1.body,
           textAlign: TextAlign.center,
         ),

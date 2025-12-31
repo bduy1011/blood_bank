@@ -205,7 +205,7 @@ class _ProfilePageState
                     height: 10,
                   ),
                   Text(
-                    'Quét CCCD/Căn cước để lấy thông tin',
+                    AppLocale.scanIdCardToGetInfo.translate(context),
                     style: context.myTheme.textThemeT1.title.copyWith(
                       fontWeight: FontWeight.w700,
                       color: AppColor.mainColor,

@@ -1,19 +1,22 @@
+import 'package:blood_donation/core/localization/app_locale.dart';
+import 'package:flutter/material.dart';
+
 enum HomeMenuType {
   profile,
   setting,
   about,
   logout;
 
-  String get title {
+  String title(BuildContext context) {
     switch (this) {
       case HomeMenuType.profile:
-        return "Tài khoản của bạn";
+        return AppLocale.yourAccount.translate(context);
       case HomeMenuType.setting:
-        return "Cài đặt";
+        return AppLocale.settings.translate(context);
       case HomeMenuType.about:
-        return "Thông tin phần mềm";
+        return AppLocale.softwareInformation.translate(context);
       case HomeMenuType.logout:
-        return "Đăng xuất";
+        return AppLocale.logout.translate(context);
     }
   }
 

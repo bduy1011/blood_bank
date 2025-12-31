@@ -117,7 +117,7 @@ class _ForgotPasswordPageState
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                  "Vui lòng điền các thông tin bên dưới.\nTrung tâm sẽ liên hệ để cấp lại mật khẩu cho bạn!",
+                  AppLocale.pleaseFillInfoBelow.translate(context),
                   textAlign: TextAlign.start,
                   style: context.myTheme.textThemeT1.title
                       .copyWith(color: Colors.black87, fontSize: 16),
@@ -226,7 +226,7 @@ class _ForgotPasswordPageState
                           width: 10,
                         ),
                         Text(
-                          "Gửi",
+                          AppLocale.send.translate(context),
                           style: context.myTheme.textThemeT1.title
                               .copyWith(color: Colors.white),
                         ),

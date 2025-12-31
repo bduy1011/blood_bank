@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:blood_donation/core/localization/app_locale.dart';
 import 'package:blood_donation/models/citizen.dart';
 import 'package:blood_donation/utils/extension/context_ext.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +46,7 @@ class _ScanCCCDQRPageState extends State<ScanCCCDQRPage> {
       if (mounted) {
         setState(() {
           _hasError = true;
-          _errorMessage = "Không thể khởi tạo camera. Vui lòng rebuild app và cấp quyền camera.\nLỗi: $e";
+          _errorMessage = "${AppLocale.cannotInitCamera.translate(context)} $e";
         });
       }
     }
@@ -65,7 +66,7 @@ class _ScanCCCDQRPageState extends State<ScanCCCDQRPage> {
       if (!citizen.isValid()) {
         final errors = citizen.getValidationErrors();
         Get.snackbar(
-          "Lỗi",
+          AppLocale.error.translate(context),
           errors.join("\n"),
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
@@ -82,8 +83,8 @@ class _ScanCCCDQRPageState extends State<ScanCCCDQRPage> {
     } catch (e) {
       log("_handleQRCode()", error: e);
       Get.snackbar(
-        "Lỗi",
-        "Không thể đọc thông tin từ QR code: $e",
+        AppLocale.error.translate(context),
+        "${AppLocale.cannotReadQRCode.translate(context)} $e",
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -116,7 +117,7 @@ class _ScanCCCDQRPageState extends State<ScanCCCDQRPage> {
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           title: Text(
-            "Quét mã QR CCCD/Căn cước",
+            AppLocale.scanQRCCCD.translate(context),
             style: context.myTheme.textThemeT1.title.copyWith(
               color: Colors.white,
             ),
@@ -177,7 +178,7 @@ class _ScanCCCDQRPageState extends State<ScanCCCDQRPage> {
                   const Icon(Icons.error_outline, size: 64, color: Colors.red),
                   const SizedBox(height: 16),
                   Text(
-                    "Lỗi camera: ${error.toString()}",
+                    "${AppLocale.cameraError.translate(context)}: ${error.toString()}",
                     style: const TextStyle(color: Colors.red),
                     textAlign: TextAlign.center,
                   ),
@@ -186,7 +187,7 @@ class _ScanCCCDQRPageState extends State<ScanCCCDQRPage> {
                     onPressed: () {
                       _initializeScanner();
                     },
-                    child: const Text("Thử lại"),
+                    child: Text(AppLocale.tryAgain.translate(context)),
                   ),
                 ],
               ),
@@ -214,7 +215,7 @@ class _ScanCCCDQRPageState extends State<ScanCCCDQRPage> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  "Đưa mã QR trên căn cước công dân vào khung",
+                  AppLocale.qrScanInstruction.translate(context),
                   style: context.myTheme.textThemeT1.body.copyWith(
                     color: Colors.white,
                     fontSize: 14,
@@ -243,7 +244,7 @@ class _ScanCCCDQRPageState extends State<ScanCCCDQRPage> {
             ),
             const SizedBox(height: 20),
             Text(
-              "Lỗi khởi tạo camera",
+              AppLocale.cameraInitError.translate(context),
               style: context.myTheme.textThemeT1.title.copyWith(
                 color: Colors.grey[700],
               ),
@@ -271,9 +272,9 @@ class _ScanCCCDQRPageState extends State<ScanCCCDQRPage> {
                   vertical: 15,
                 ),
               ),
-              child: const Text(
-                "Thử lại",
-                style: TextStyle(color: Colors.white),
+              child: Text(
+                AppLocale.tryAgain.translate(context),
+                style: const TextStyle(color: Colors.white),
               ),
             ),
             const SizedBox(height: 10),
@@ -281,7 +282,7 @@ class _ScanCCCDQRPageState extends State<ScanCCCDQRPage> {
               onPressed: () {
                 Get.back(result: null);
               },
-              child: const Text("Quay lại"),
+              child: Text(AppLocale.back.translate(context)),
             ),
           ],
         ),

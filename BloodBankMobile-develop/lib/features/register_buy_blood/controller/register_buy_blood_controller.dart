@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:blood_donation/app/app_util/enum.dart';
 import 'package:blood_donation/base/base_view/base_view.dart';
+import 'package:blood_donation/core/localization/app_locale.dart';
 import 'package:blood_donation/models/giao_dich_template.dart';
 import 'package:blood_donation/utils/extension/datetime_extension.dart';
 import 'package:get/get.dart';
@@ -87,7 +88,7 @@ class RegisterBuyBloodController extends BaseModelStateful {
       ///
       AppUtils.instance
           .showMessage(
-        "Vui lòng nhập cập nhật thông tin cá nhân trước khi tạo yêu cầu nhượng máu!",
+        AppLocale.pleaseUpdatePersonalInfoBeforeBuyBlood.translate(Get.context!),
         context: Get.context,
       )
           .then((v) {
@@ -369,7 +370,7 @@ class RegisterBuyBloodController extends BaseModelStateful {
     ///
     //
     if (dmDonViCapMauCurrent == null) {
-      AppUtils.instance.showToast("Vui lòng chọn đơn vị cấp máu.");
+      AppUtils.instance.showToast(AppLocale.pleaseSelectBloodUnit.translate(Get.context!));
       return;
     }
     if (!checkAvailableTonKho()) {

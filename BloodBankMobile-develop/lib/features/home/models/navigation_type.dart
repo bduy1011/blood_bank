@@ -1,3 +1,6 @@
+import 'package:blood_donation/core/localization/app_locale.dart';
+import 'package:flutter/material.dart';
+
 enum NavigationType {
   home,
   notification,
@@ -17,16 +20,16 @@ enum NavigationType {
     }
   }
 
-  String get title {
+  String title(BuildContext context) {
     switch (this) {
       case NavigationType.home:
-        return "Trang chủ";
+        return AppLocale.home.translate(context);
       case NavigationType.notification:
-        return "Thông báo";
+        return AppLocale.notification.translate(context);
       case NavigationType.register:
-        return "Đăng ký";
+        return AppLocale.register.translate(context);
       case NavigationType.setting:
-        return "Cá nhân";
+        return AppLocale.personal.translate(context);
     }
   }
 }

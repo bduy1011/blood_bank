@@ -3,8 +3,10 @@ import 'dart:developer';
 
 import 'package:blood_donation/app/app_util/enum.dart';
 import 'package:blood_donation/base/base_view/base_view.dart';
+import 'package:blood_donation/core/localization/app_locale.dart';
 import 'package:blood_donation/utils/extension/context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../models/district.dart';
 import '../../../models/general_response.dart';
@@ -160,7 +162,7 @@ class BloodLocationsController extends BaseModelStateful {
           id: item.id ?? 0);
       hideLoading();
       if (response.status == 200) {
-        AppUtils.instance.showToast("Hủy đăng ký thành công");
+        AppUtils.instance.showToast(AppLocale.cancelRegisterSuccess.translate(Get.context!));
         loadData();
       }
 
@@ -185,7 +187,7 @@ class BloodLocationsController extends BaseModelStateful {
           ProcessWebviewDialog.instance.openGoogleMapRoadToUrlAddress(
               response.data!.firstOrNull!.googleMapLink ?? "");
         } else {
-          AppUtils.instance.showToast("Không tìm thấy đường đi");
+          AppUtils.instance.showToast(AppLocale.cannotFindRoute.translate(Get.context!));
         }
       }
 

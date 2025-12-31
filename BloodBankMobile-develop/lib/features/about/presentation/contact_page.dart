@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:blood_donation/app/theme/colors.dart';
 import 'package:blood_donation/base/base_view/base_view_stateful.dart';
+import 'package:blood_donation/core/localization/app_locale.dart';
 import 'package:blood_donation/utils/extension/context_ext.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +52,7 @@ class _AboutPageState extends BaseViewStateful<ContactPage, AboutController> {
                 color: Colors.white,
               )),
           title: Text(
-            "Liên hệ",
+            AppLocale.contact.translate(context),
             style:
                 context.myTheme.textThemeT1.title.copyWith(color: Colors.white),
           ),
@@ -215,10 +216,10 @@ class _AboutPageState extends BaseViewStateful<ContactPage, AboutController> {
                           child: Container(
                             height: 50,
                             alignment: Alignment.centerLeft,
-                            child: const AutoSizeText(
-                              'LIÊN HỆ QUA FANPAGE',
+                            child: AutoSizeText(
+                              AppLocale.contactViaFanpage.translate(context),
                               style:
-                                  TextStyle(color: Colors.black, fontSize: 16),
+                                  const TextStyle(color: Colors.black, fontSize: 16),
                               textAlign: TextAlign.start,
                             ),
                           ),

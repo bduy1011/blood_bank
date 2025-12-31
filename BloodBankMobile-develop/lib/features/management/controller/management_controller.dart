@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:blood_donation/base/base_view/base_view.dart';
+import 'package:blood_donation/core/localization/app_locale.dart';
 import 'package:blood_donation/utils/extension/datetime_extension.dart';
 import 'package:get/get.dart';
 
@@ -153,7 +154,7 @@ class ManagementController extends BaseModelStateful {
 
       AppUtils.instance.hideLoading();
       if (response.status == 200) {
-        AppUtils.instance.showToast("Cập nhật thông tin tồn kho thành công.");
+        AppUtils.instance.showToast(AppLocale.updateInventorySuccess.translate(Get.context!));
         Get.back();
       } else {
         AppUtils.instance.showToast(

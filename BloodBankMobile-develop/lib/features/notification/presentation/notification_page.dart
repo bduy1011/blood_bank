@@ -1,4 +1,5 @@
 import 'package:blood_donation/base/base_view/base_view.dart';
+import 'package:blood_donation/core/localization/app_locale.dart';
 import 'package:blood_donation/utils/extension/context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -47,7 +48,7 @@ class _NotificationPageState
                   color: Colors.white,
                 )),
             title: Text(
-              "Thông báo",
+              AppLocale.notification.translate(context),
               style: context.myTheme.textThemeT1.title
                   .copyWith(color: Colors.white),
             ),
@@ -70,7 +71,7 @@ class _NotificationPageState
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30),
         child: Text(
-          'Bạn chưa có thông báo nào',
+          AppLocale.noNotificationYet.translate(context),
           style: Get.context?.myTheme.textThemeT1.body,
           textAlign: TextAlign.center,
         ),

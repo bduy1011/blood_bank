@@ -60,7 +60,7 @@ class _ChangePasswordState
               ),
               centerTitle: true,
               title: Text(
-                "Thay đổi mật khẩu",
+                AppLocale.changePassword.translate(context),
                 style: context.myTheme.textThemeT1.title
                     .copyWith(color: Colors.white),
               ),
@@ -227,7 +227,7 @@ class _ChangePasswordState
                                       ),
                                     ),
                                     child: Text(
-                                      "Lưu thay đổi",
+                                      AppLocale.saveChanges.translate(context),
                                       style: context.myTheme.textThemeT1.title
                                           .copyWith(color: Colors.white),
                                     )),

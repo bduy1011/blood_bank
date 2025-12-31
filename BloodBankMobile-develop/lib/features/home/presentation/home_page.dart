@@ -94,7 +94,7 @@ class _HomePageState extends BaseViewStateful<HomePage, HomeController> {
                               spacing: 20,
                             ),
                             Text(
-                              "Chức năng".toUpperCase(),
+                              AppLocale.functions.translate(context).toUpperCase(),
                               style: context.myTheme.textThemeT1.title,
                             ),
                             buildMenus(),
@@ -183,12 +183,12 @@ class _HomePageState extends BaseViewStateful<HomePage, HomeController> {
         child: RichText(
           textAlign: TextAlign.start,
           text: TextSpan(
-            text: 'Bạn chưa cập nhật thông tin cá nhân.\n',
+            text: '${AppLocale.notUpdatePersonalInfo.translate(context)}\n',
             style: context.myTheme.textThemeT1.body
                 .copyWith(fontSize: 16, fontWeight: FontWeight.w700),
             children: [
               TextSpan(
-                text: '>> Cập nhật ngay <<',
+                text: '>> ${AppLocale.updateNow.translate(context)} <<',
                 recognizer: TapGestureRecognizer()
                   ..onTap = () async {
                     ///
@@ -213,13 +213,13 @@ class _HomePageState extends BaseViewStateful<HomePage, HomeController> {
             children: [
               TextSpan(
                 text:
-                    "Đã ${DateTime.now().difference(controller.appCenter.authentication!.ngayHienMauGanNhat!).inDays} ngày rồi bạn chưa hiến máu!\n",
+                    AppLocale.daysSinceLastDonation.translate(context).replaceAll('{days}', '${DateTime.now().difference(controller.appCenter.authentication!.ngayHienMauGanNhat!).inDays}'),
                 style: context.myTheme.textThemeT1.body
                     .copyWith(fontSize: 16, fontWeight: FontWeight.w700),
               ),
               TextSpan(
                 text:
-                    "Lần hiến máu gần nhất của bạn: ${controller.appCenter.authentication?.ngayHienMauGanNhat?.dateTimeString}",
+                    AppLocale.lastDonation.translate(context).replaceAll('{date}', controller.appCenter.authentication?.ngayHienMauGanNhat?.dateTimeString ?? ''),
                 style: context.myTheme.textThemeT1.body.copyWith(fontSize: 16),
               )
             ],
@@ -235,8 +235,8 @@ class _HomePageState extends BaseViewStateful<HomePage, HomeController> {
             TextSpan(
               text: controller.appCenter.authentication?.soLanHienMau != null &&
                       controller.appCenter.authentication!.soLanHienMau! > 0
-                  ? "Chào mừng bạn quay trở lại!"
-                  : "Bạn chưa hiến máu lần nào!",
+                  ? AppLocale.welcomeBack.translate(context)
+                  : AppLocale.notDonatedYet.translate(context),
               style: context.myTheme.textThemeT1.body
                   .copyWith(fontSize: 16, fontWeight: FontWeight.w700),
             ),
@@ -392,7 +392,7 @@ class _HomePageState extends BaseViewStateful<HomePage, HomeController> {
                             const VSpacing(),
                             AutoSizeText(
                               group: autoSizeGroup,
-                              item.title,
+                              item.title(context),
                               style: context.myTheme.textThemeT1.body,
                               textAlign: TextAlign.center,
                               maxFontSize: 14,
@@ -545,7 +545,7 @@ class _HomeHeaderWidgetState extends State<HomeHeaderWidget>
                             ),
                           ),
                           const VSpacing(),
-                          Text("Nhóm máu",
+                          Text(AppLocale.bloodType.translate(context),
                               style: context.myTheme.textThemeT1.title.copyWith(
                                 color: Colors.white,
                                 fontStyle: FontStyle.italic,
@@ -578,7 +578,7 @@ class _HomeHeaderWidgetState extends State<HomeHeaderWidget>
                             ),
                           ),
                           const VSpacing(),
-                          Text("Số lần hiến máu",
+                          Text(AppLocale.numberOfBloodDonations.translate(context),
                               style: context.myTheme.textThemeT1.title.copyWith(
                                   color: Colors.white,
                                   fontStyle: FontStyle.italic))
@@ -708,7 +708,7 @@ class _HomeHeaderWidgetState extends State<HomeHeaderWidget>
                   spacing: 20,
                 ),
                 Text(
-                  HomeMenuType.profile.title,
+                  HomeMenuType.profile.title(context),
                   style: context.myTheme.textThemeT1.body,
                 )
               ],
@@ -748,7 +748,7 @@ class _HomeHeaderWidgetState extends State<HomeHeaderWidget>
                         spacing: 20,
                       ),
                       Text(
-                        e.title,
+                        e.title(context),
                         style: context.myTheme.textThemeT1.body,
                       )
                     ],

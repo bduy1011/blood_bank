@@ -131,7 +131,7 @@ class _LoginPageState extends BaseViewStateful<LoginPage, LoginController> {
         // backgroundColor: Colors.red,
       ),
       child: Text(
-        "Bạn quên mật khẩu?",
+        AppLocale.forgotPassword.translate(context),
         style: context.myTheme.textThemeT1.title
             .copyWith(color: AppColor.grey, fontSize: 16),
       ),
@@ -171,7 +171,7 @@ class _LoginPageState extends BaseViewStateful<LoginPage, LoginController> {
         // backgroundColor: Colors.red,
       ),
       child: Text(
-        "Hỏi - đáp",
+        AppLocale.questionAndAnswer.translate(context),
         style: context.myTheme.textThemeT1.title
             .copyWith(color: AppColor.mainColor, fontSize: 16),
       ),
@@ -189,7 +189,7 @@ class _LoginPageState extends BaseViewStateful<LoginPage, LoginController> {
         // backgroundColor: Colors.red,
       ),
       child: Text(
-        "Liên hệ",
+        AppLocale.contact.translate(context),
         style: context.myTheme.textThemeT1.title
             .copyWith(color: AppColor.mainColor, fontSize: 16),
       ),

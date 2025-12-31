@@ -31,20 +31,9 @@ class _SettingsPageState
         _buildSection(
           AppLocale.myAccount.translate(context),
           [
-            // Uncomment if needed
-            // menuItem(
-            //   icon: Icons.replay,
-            //   title: AppLocale.restorePurchased.tr(context),
-            //   onTap: () {},
-            // ),
-            // menuItem(
-            //   iconPath: AppIcons.icBlockAds,
-            //   title: AppLocale.all_premium_access.tr(context),
-            //   onTap: () {},
-            // ),
             menuItem(
               icon: Icons.account_circle_outlined,
-              title: "Thông tin tài khoản",
+              title: AppLocale.accountInformation.translate(context),
               onTap: () {
                 ///
                 Get.toNamed(Routes.profile);
@@ -52,7 +41,7 @@ class _SettingsPageState
             ),
             menuItem(
               icon: Icons.password_rounded,
-              title: "Thay đổi mật khẩu",
+              title: AppLocale.changePassword.translate(context),
               onTap: () {
                 ///
                 Get.toNamed(Routes.changePassword);
@@ -61,59 +50,34 @@ class _SettingsPageState
           ],
         ),
         _buildSection(
-          "Thông tin ứng dụng",
+          AppLocale.appInformation.translate(context),
           [
-            //     // menuItem(
-            //     //   iconPath: AppIcons.icGuide,
-            //     //   title: AppLocale.howToUseGuide.tr(context),
-            //     //   onTap: () {},
-            //     // ),
-            //     menuItem(
-            //       iconPath: AppIcons.icRateus,
-            //       title: AppLocale.rateUs.translate(context),
-            //       onTap: () {
-            //         Get.toNamed(Routes.questionAnswer);
-            //       },
-            //     ),
             menuItem(
               iconPath: AppIcons.icFeedback,
-              title: "Thông tin phiên bản",
+              title: AppLocale.versionInformation.translate(context),
               onTap: () {
                 Get.to(() => const AboutPage());
               },
             ),
             menuItem(
               iconPath: AppIcons.icFeedback,
-              title: "Đánh giá",
+              title: AppLocale.rateUs.translate(context),
               onTap: () {
                 controller.reviewAPP();
               },
             ),
           ],
         ),
-        // _buildSection(
-        //   AppLocale.moreAboutUs.translate(context),
-        //   [
-        //     menuItem(
-        //       icon: Icons.info_outline,
-        //       title: AppLocale.aboutUs.translate(context),
-        //       onTap: () {},
-        //     ),
-        //     menuItem(
-        //       icon: Icons.share,
-        //       title: AppLocale.share.translate(context),
-        //       onTap: () {},
-        //     ),
-        //     menuItem(
-        //       icon: Icons.shield_outlined,
-        //       title: AppLocale.privacyPolicy.translate(context),
-        //       onTap: () {},
-        //     ),
-        //   ],
-        // ),
         _buildSection(
-          "Thiết lập",
+          AppLocale.setup.translate(context),
           [
+            menuItem(
+              icon: Icons.language,
+              title: AppLocale.language.translate(context),
+              onTap: () {
+                _showLanguageDialog(context);
+              },
+            ),
             menuItem(
               icon: Icons.logout,
               title: AppLocale.logout.translate(context),
@@ -124,7 +88,7 @@ class _SettingsPageState
             ),
             menuItem(
               icon: Icons.delete_outline,
-              title: "Xóa tài khoản",
+              title: AppLocale.deleteAccount.translate(context),
               onTap: () {
                 ///
                 controller.deleteAccount();
@@ -203,7 +167,7 @@ class _SettingsPageState
                     Positioned(
                       top: 60,
                       child: Text(
-                        'Cài đặt',
+                        AppLocale.settings.translate(context),
                         style: context.myTheme.textThemeT1.header1
                             .copyWith(color: Colors.white),
                       ),
@@ -281,22 +245,22 @@ class _SettingsPageState
                   color: Colors.white,
                   alignment: Alignment.topLeft,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: const TickerText(
+                    child: TickerText(
                     // default values
                     // controller: tickerTextController, // this is optional
                     scrollDirection: Axis.horizontal,
                     speed: 20,
-                    startPauseDuration: Duration(seconds: 3),
-                    endPauseDuration: Duration(seconds: 5),
-                    returnDuration: Duration(milliseconds: 800),
+                    startPauseDuration: const Duration(seconds: 3),
+                    endPauseDuration: const Duration(seconds: 5),
+                    returnDuration: const Duration(milliseconds: 800),
                     primaryCurve: Curves.linear,
                     returnCurve: Curves.easeOut,
                     child: Text(
-                      "Chân thành cảm ơn Công ty Medcomtech đã đồng hành cùng Trung tâm Truyền máu Chợ Rẫy trong hoạt động vận động hiến máu tình nguyện.",
+                      AppLocale.thankYouMessage.translate(context),
                       maxLines: 1,
                       overflow: TextOverflow.clip,
                       softWrap: false,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 18,
                         color: AppColor.mainColor,
                         fontWeight: FontWeight.w500,
@@ -452,5 +416,57 @@ class _SettingsPageState
         ),
       ),
     );
+  }
+
+  void _showLanguageDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(AppLocale.language.translate(context)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: Text(AppLocale.english.translate(context)),
+                leading: Radio<AppLanguage>(
+                  value: AppLanguage.en,
+                  groupValue: _getCurrentLanguage(),
+                  onChanged: (AppLanguage? value) {
+                    if (value != null) {
+                      controller.changeLanguage(value);
+                      Navigator.of(context).pop();
+                      setState(() {});
+                    }
+                  },
+                ),
+              ),
+              ListTile(
+                title: Text(AppLocale.vietnamese.translate(context)),
+                leading: Radio<AppLanguage>(
+                  value: AppLanguage.vi,
+                  groupValue: _getCurrentLanguage(),
+                  onChanged: (AppLanguage? value) {
+                    if (value != null) {
+                      controller.changeLanguage(value);
+                      Navigator.of(context).pop();
+                      setState(() {});
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  AppLanguage _getCurrentLanguage() {
+    final currentLocale = localization.currentLocale;
+    if (currentLocale?.languageCode == 'en') {
+      return AppLanguage.en;
+    }
+    return AppLanguage.vi;
   }
 }

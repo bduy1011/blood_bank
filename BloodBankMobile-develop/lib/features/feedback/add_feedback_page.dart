@@ -1,5 +1,6 @@
 import 'package:blood_donation/app/theme/colors.dart';
 import 'package:blood_donation/base/base_view/base_view_stateful.dart';
+import 'package:blood_donation/core/localization/app_locale.dart';
 import 'package:blood_donation/features/feedback/controller/feedback_controller.dart';
 import 'package:blood_donation/utils/extension/context_ext.dart';
 import 'package:flutter/material.dart';
@@ -169,9 +170,9 @@ class _AddFeedbackSupportPageState
                         Container(
                           alignment: Alignment.center,
                           height: 45,
-                          child: const Text(
-                            'Gửi',
-                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          child: Text(
+                            AppLocale.send.translate(context),
+                            style: const TextStyle(color: Colors.white, fontSize: 18),
                           ),
                         ),
                       ],

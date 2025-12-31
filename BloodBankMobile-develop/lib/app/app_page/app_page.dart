@@ -111,7 +111,7 @@ class _AppPageState extends BaseViewStateful<AppPage, AppPageController> {
             Container(
               alignment: Alignment.center,
               child: AutoSizeText(
-                item.title,
+                item.title(context),
                 group: controller.bottomTextGroup,
                 style: context.myTheme.textThemeT1.body.copyWith(
                     color: isActive

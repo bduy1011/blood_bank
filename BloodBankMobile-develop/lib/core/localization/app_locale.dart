@@ -132,17 +132,148 @@ mixin class AppLocale {
   static const String listRegister = 'listRegister';
   static const String selectBloodBuyUnit = 'selectBloodBuyUnit';
   static const String note = 'note';
+  static const String accountInformation = 'account_information';
+  static const String changePassword = 'change_password';
+  static const String appInformation = 'app_information';
+  static const String versionInformation = 'version_information';
+  static const String setup = 'setup';
+  static const String language = 'language';
+  static const String english = 'english';
+  static const String vietnamese = 'vietnamese';
+  static const String thankYouMessage = 'thank_you_message';
+  static const String confirmDeleteAccount = 'confirm_delete_account';
+  static const String deleteAccountMessage = 'delete_account_message';
+  static const String deleteAccountSuccess = 'delete_account_success';
+  static const String deleteAccountFailed = 'delete_account_failed';
+  static const String scanQRCCCD = 'scan_qr_cccd';
+  static const String tryAgain = 'try_again';
+  static const String back = 'back';
+  static const String close = 'close';
+  static const String cameraError = 'camera_error';
+  static const String cameraInitError = 'camera_init_error';
+  static const String qrScanInstruction = 'qr_scan_instruction';
+  static const String cannotInitCamera = 'cannot_init_camera';
+  static const String error = 'error';
+  static const String cannotReadQRCode = 'cannot_read_qr_code';
+  static const String passwordNotMatch = 'password_not_match';
+  static const String registerAccountSuccess = 'register_account_success';
+  static const String registerAccountFailed = 'register_account_failed';
+  static const String pleaseSignBeforeConfirm = 'please_sign_before_confirm';
+  static const String confirm = 'confirm';
+  static const String registerAccount = 'register_account';
+  static const String signatureConfirmed = 'signature_confirmed';
+  static const String passwordMinLength = 'password_min_length';
+  static const String cannotSaveSignature = 'cannot_save_signature';
+  static const String errorOccurred = 'error_occurred';
+  static const String signatureCancelled = 'signature_cancelled';
+  static const String functions = 'functions';
+  static const String home = 'home';
+  static const String personal = 'personal';
+  static const String historyRegisterBuyBlood = 'history_register_buy_blood';
+  static const String approveBuyBloodRequest = 'approve_buy_blood_request';
+  static const String contactSupport = 'contact_support';
+  static const String registerBuyBloodShort = 'register_buy_blood_short';
+  static const String bloodDonationScheduleShort = 'blood_donation_schedule_short';
+  static const String bloodDonationHistoryShort = 'blood_donation_history_short';
+  static const String bloodDonationRegisterShort = 'blood_donation_register_short';
+  static const String yourAccount = 'your_account';
+  static const String softwareInformation = 'software_information';
+  static const String noNotificationYet = 'no_notification_yet';
+  static const String notUpdatePersonalInfo = 'not_update_personal_info';
+  static const String updateNow = 'update_now';
+  static const String noData = 'no_data';
+  static const String pleaseUpdatePersonalInfoBefore = 'please_update_personal_info_before';
+  static const String expectedArrivalDateTime = 'expected_arrival_date_time';
+  static const String contactAddress = 'contact_address';
+  static const String fromToDate = 'from_to_date';
+  static const String pleaseEnterApprovalQuantity = 'please_enter_approval_quantity';
+  static const String pleaseEnterFullInfo = 'please_enter_full_info';
+  static const String pleaseEnterFullNameBeforeSign = 'please_enter_full_name_before_sign';
+  static const String pleaseEnterIdCardBeforeSign = 'please_enter_id_card_before_sign';
+  static const String pleaseEnterFeedbackContent = 'please_enter_feedback_content';
+  static const String pleaseUpdatePersonalInfoBeforeFeedback = 'please_update_personal_info_before_feedback';
+  static const String pleaseUpdatePersonalInfoBeforeRegister = 'please_update_personal_info_before_register';
+  static const String pleaseUpdatePersonalInfoBeforeBuyBlood = 'please_update_personal_info_before_buy_blood';
+  static const String saveChanges = 'save_changes';
+  static const String selectDateTime = 'select_date_time';
+  static const String notEnterOldPassword = 'not_enter_old_password';
+  static const String notEnterPassword = 'not_enter_password';
+  static const String changePasswordSuccess = 'change_password_success';
+  static const String changePasswordFailed = 'change_password_failed';
+  static const String numberOfBloodDonations = 'number_of_blood_donations';
+  static const String welcomeBack = 'welcome_back';
+  static const String notDonatedYet = 'not_donated_yet';
+  static const String daysSinceLastDonation = 'days_since_last_donation';
+  static const String lastDonation = 'last_donation';
+  static const String notificationTitle = 'notification_title';
+  static const String cannotFindRoute = 'cannot_find_route';
+  static const String pleaseSelectBloodUnit = 'please_select_blood_unit';
+  static const String approveBuyBloodSuccess = 'approve_buy_blood_success';
+  static const String rejectBuyBloodSuccess = 'reject_buy_blood_success';
+  static const String sendSuccess = 'send_success';
+  static const String notEnterFullName = 'not_enter_full_name';
+  static const String invalidFullName = 'invalid_full_name';
+  static const String notEnterUsername = 'not_enter_username';
+  static const String notEnterPhone = 'not_enter_phone';
+  static const String invalidPhone = 'invalid_phone';
+  static const String qrCodeReadSuccess = 'qr_code_read_success';
+  static const String qrCodeReadError = 'qr_code_read_error';
+  static const String qrScanError = 'qr_scan_error';
+  static const String signatureSavedSuccess = 'signature_saved_success';
+  static const String signatureNotComplete = 'signature_not_complete';
+  static const String signatureError = 'signature_error';
+  static const String updateAccountSuccess = 'update_account_success';
+  static const String updateAccountFailed = 'update_account_failed';
+  static const String invalidIdCard = 'invalid_id_card';
+  static const String cancelRegisterSuccess = 'cancel_register_success';
+  static const String cancelRegisterFailed = 'cancel_register_failed';
+  static const String cancelBuyBloodSuccess = 'cancel_buy_blood_success';
+  static const String cancelBuyBloodFailed = 'cancel_buy_blood_failed';
+  static const String updateInventorySuccess = 'update_inventory_success';
+  static const String errorOccurredPleaseRetry = 'error_occurred_please_retry';
+  static const String sendOtpSuccess = 'send_otp_success';
+  static const String time = 'time';
+  static const String invalidUsername = 'invalid_username';
+  static const String scanIdCardToGetInfo = 'scan_id_card_to_get_info';
+  static const String registeringToDonate = 'registering_to_donate';
+  static const String platelets = 'platelets';
+  static const String blood = 'blood';
+  static const String at = 'at';
+  static const String timeFrom = 'time_from';
+  static const String day = 'day';
+  static const String noDataFromToDate = 'no_data_from_to_date';
+  static const String updateIdCard = 'update_id_card';
+  static const String here = 'here';
+  static const String toViewDonationRegisterHistory = 'to_view_donation_register_history';
+  static const String toViewDonationHistory = 'to_view_donation_history';
+  static const String apply = 'apply';
+  static const String contactInformation = 'contact_information';
+  static const String contactViaFanpage = 'contact_via_fanpage';
+  static const String sendRequestDirectly = 'send_request_directly';
+  static const String selectTimeRange = 'select_time_range';
+  static const String forgotPassword = 'forgot_password';
+  static const String pleaseFillInfoBelow = 'please_fill_info_below';
+  static const String send = 'send';
+  static const String address = 'address';
+  static const String phone = 'phone';
+  static const String extension = 'extension';
+  static const String or = 'or';
+  static const String contactDuringBusinessHours = 'contact_during_business_hours';
+  static const String version = 'version';
+  static const String updateDate = 'update_date';
+  static const String thankYouForUsingApp = 'thank_you_for_using_app';
+  static const String rateApp = 'rate_app';
 
   static const Map<String, dynamic> EN = {
-    homeBook: 'Đặt lịch',
-    homeRegister: 'Đăng ký',
-    homeHistory: 'Lịch sử',
-    homeLocation: "Địa điểm",
-    homeBloodUsers: "Danh sách\nhiến máu",
-    homeStatictics: "Thống kê",
-    homeManagement: "Quản lý",
-    search: "Tìm kiếm",
-    settings: "Cài đặt",
+    homeBook: 'Book appointment',
+    homeRegister: 'Register',
+    homeHistory: 'History',
+    homeLocation: "Location",
+    homeBloodUsers: "Blood donation\nlist",
+    homeStatictics: "Statistics",
+    homeManagement: "Management",
+    search: "Search",
+    settings: "Settings",
     generalSetting: 'General setting',
     updateInformation: 'Update information',
     bloodDonationHistory: 'Blood donation history',
@@ -228,6 +359,137 @@ mixin class AppLocale {
     listRegister: 'List register',
     selectBloodBuyUnit: 'Select the unit for blood concession',
     note: 'Note',
+    accountInformation: 'Account information',
+    changePassword: 'Change password',
+    appInformation: 'App information',
+    versionInformation: 'Version information',
+    setup: 'Setup',
+    language: 'Language',
+    english: 'English',
+    vietnamese: 'Vietnamese',
+    thankYouMessage: 'Sincere thanks to Medcomtech Company for accompanying Cho Ray Blood Transfusion Center in voluntary blood donation activities.',
+    confirmDeleteAccount: 'Confirm delete account',
+    deleteAccountMessage: 'Your account will be deleted\npermanently',
+    deleteAccountSuccess: 'Account deleted successfully',
+    deleteAccountFailed: 'Failed to delete account',
+    scanQRCCCD: 'Scan QR CCCD/ID Card',
+    tryAgain: 'Try again',
+    back: 'Back',
+    close: 'Close',
+    cameraError: 'Camera error',
+    cameraInitError: 'Camera initialization error',
+    qrScanInstruction: 'Place the QR code on your ID card in the frame',
+    cannotInitCamera: 'Cannot initialize camera. Please rebuild the app and grant camera permission.\nError:',
+    error: 'Error',
+    cannotReadQRCode: 'Cannot read information from QR code:',
+    passwordNotMatch: 'Password and confirm password do not match',
+    registerAccountSuccess: 'Account registration successful!',
+    registerAccountFailed: 'Account registration failed!',
+    pleaseSignBeforeConfirm: 'Please sign before confirming',
+    confirm: 'Confirm',
+    registerAccount: 'Register account',
+    signatureConfirmed: 'Digital signature confirmed!',
+    passwordMinLength: 'Password must be at least 6 characters',
+    cannotSaveSignature: 'Cannot save signature',
+    errorOccurred: 'An error occurred:',
+    signatureCancelled: 'Digital signature cancelled',
+    functions: 'Functions',
+    home: 'Home',
+    personal: 'Personal',
+    historyRegisterBuyBlood: 'Registration history\nfor blood concession',
+    approveBuyBloodRequest: 'Approve blood\nconcession request',
+    contactSupport: 'Contact\nsupport',
+    registerBuyBloodShort: 'Register\nblood concession',
+    bloodDonationScheduleShort: 'Blood donation\nschedule',
+    bloodDonationHistoryShort: 'Blood donation\nhistory',
+    bloodDonationRegisterShort: 'Registration history\nfor blood donation',
+    yourAccount: 'Your account',
+    softwareInformation: 'Software information',
+    noNotificationYet: "You don't have any notifications yet",
+    notUpdatePersonalInfo: "You have not updated personal information.",
+    updateNow: "Update now",
+    noData: 'No data',
+    pleaseUpdatePersonalInfoBefore: 'Please update personal information before',
+    expectedArrivalDateTime: 'Expected arrival date and time',
+    contactAddress: 'Contact address',
+    fromToDate: 'From {fromDate} to {toDate}',
+    pleaseEnterApprovalQuantity: 'Please enter approval quantity',
+    pleaseEnterFullInfo: 'Please enter full information\nto continue!',
+    pleaseEnterFullNameBeforeSign: 'Please enter full name before signing',
+    pleaseEnterIdCardBeforeSign: 'Please enter ID card before signing',
+    pleaseEnterFeedbackContent: 'Please enter feedback content',
+    pleaseUpdatePersonalInfoBeforeFeedback: 'Please update personal information before sending feedback!',
+    pleaseUpdatePersonalInfoBeforeRegister: 'Please update personal information before registering to donate blood!',
+    pleaseUpdatePersonalInfoBeforeBuyBlood: 'Please update personal information before creating blood concession request!',
+    saveChanges: 'Save changes',
+    selectDateTime: 'Select date and time',
+    notEnterOldPassword: 'Please enter old password',
+    notEnterPassword: 'Please enter password',
+    changePasswordSuccess: 'Password changed successfully',
+    changePasswordFailed: 'Password change failed',
+    numberOfBloodDonations: 'Number of blood donations',
+    welcomeBack: 'Welcome back!',
+    notDonatedYet: "You haven't donated blood yet!",
+    daysSinceLastDonation: "It's been {days} days since you last donated blood!\n",
+    lastDonation: 'Your last blood donation: {date}',
+    notificationTitle: 'Notification',
+    cannotFindRoute: 'Cannot find route',
+    pleaseSelectBloodUnit: 'Please select blood unit',
+    approveBuyBloodSuccess: 'Blood concession request approved successfully',
+    rejectBuyBloodSuccess: 'Blood concession request rejected successfully',
+    sendSuccess: 'Sent successfully!',
+    notEnterFullName: 'Please enter full name',
+    invalidFullName: 'Invalid full name',
+    notEnterUsername: 'Please enter username',
+    notEnterPhone: 'Please enter phone number',
+    invalidPhone: 'Invalid phone number',
+    qrCodeReadSuccess: 'QR code information retrieved successfully!',
+    qrCodeReadError: 'Error reading QR code information!',
+    qrScanError: 'Error scanning QR code!',
+    signatureSavedSuccess: 'Signature saved successfully!',
+    signatureNotComplete: 'Signature not completed',
+    signatureError: 'Error performing digital signature:',
+    updateAccountSuccess: 'Account updated successfully',
+    updateAccountFailed: 'Account update failed',
+    invalidIdCard: 'ID card format is incorrect!',
+    cancelRegisterSuccess: 'Registration cancelled successfully',
+    cancelRegisterFailed: 'Registration cancellation failed',
+    cancelBuyBloodSuccess: 'Blood concession request cancelled successfully',
+    cancelBuyBloodFailed: 'Blood concession request cancellation failed',
+    updateInventorySuccess: 'Inventory information updated successfully',
+    errorOccurredPleaseRetry: 'An error occurred, please try again later',
+    sendOtpSuccess: 'OTP sent successfully',
+    time: 'Time',
+    invalidUsername: 'Username must be ID card with 9 or 12 characters!',
+    scanIdCardToGetInfo: 'Scan ID card to get information',
+    registeringToDonate: 'You are registering to donate',
+    platelets: 'platelets',
+    blood: 'blood',
+    at: 'at',
+    timeFrom: 'Time from',
+    day: 'day',
+    noDataFromToDate: 'No data\nfrom {fromDate} to {toDate}',
+    updateIdCard: 'Update ID card',
+    here: 'Here',
+    toViewDonationRegisterHistory: ' to view your blood donation registration history.',
+    toViewDonationHistory: ' to view your blood donation history.',
+    apply: 'Apply',
+    selectTimeRange: 'Select time range',
+    contactInformation: 'CONTACT INFORMATION',
+    contactViaFanpage: 'CONTACT VIA FANPAGE',
+    sendRequestDirectly: 'SEND REQUEST DIRECTLY',
+    forgotPassword: 'Did you forget your password?',
+    pleaseFillInfoBelow: 'Please fill in the information below.\nThe center will contact you to reset your password!',
+    send: 'Send',
+    address: 'Address: ',
+    phone: 'Phone: ',
+    extension: ' - extension ',
+    or: ' or ',
+    contactDuringBusinessHours: ' (contact during business hours).',
+    version: 'Version: V.',
+    updateDate: 'Update date: ',
+    thankYouForUsingApp: 'Thank you for using our app!\nPlease leave a review to help us improve',
+    rateApp: 'RATE APP',
   };
 
   static const Map<String, dynamic> VI = {
@@ -324,6 +586,137 @@ mixin class AppLocale {
     listRegister: 'Danh sách đăng ký',
     selectBloodBuyUnit: 'Chọn đơn vị cho nhượng máu',
     note: 'Ghi chú',
+    accountInformation: 'Thông tin tài khoản',
+    changePassword: 'Thay đổi mật khẩu',
+    appInformation: 'Thông tin ứng dụng',
+    versionInformation: 'Thông tin phiên bản',
+    setup: 'Thiết lập',
+    language: 'Ngôn ngữ',
+    english: 'Tiếng Anh',
+    vietnamese: 'Tiếng Việt',
+    thankYouMessage: 'Chân thành cảm ơn Công ty Medcomtech đã đồng hành cùng Trung tâm Truyền máu Chợ Rẫy trong hoạt động vận động hiến máu tình nguyện.',
+    confirmDeleteAccount: 'Xác nhận xóa tài khoản',
+    deleteAccountMessage: 'Tài khoản của bạn sẽ bị xóa\nvĩnh viễn',
+    deleteAccountSuccess: 'Xóa tài khoản thành công',
+    deleteAccountFailed: 'Xóa tài khoản thất bại',
+    scanQRCCCD: 'Quét mã QR CCCD/Căn cước',
+    tryAgain: 'Thử lại',
+    back: 'Quay lại',
+    close: 'Đóng',
+    cameraError: 'Lỗi camera',
+    cameraInitError: 'Lỗi khởi tạo camera',
+    qrScanInstruction: 'Đưa mã QR trên căn cước công dân vào khung',
+    cannotInitCamera: 'Không thể khởi tạo camera. Vui lòng rebuild app và cấp quyền camera.\nLỗi:',
+    error: 'Lỗi',
+    cannotReadQRCode: 'Không thể đọc thông tin từ QR code:',
+    passwordNotMatch: 'Mật khẩu và xác nhận mật khẩu không giống nhau',
+    registerAccountSuccess: 'Đăng ký tài khoản thành công!',
+    registerAccountFailed: 'Đăng ký tài khoản thất bại!',
+    pleaseSignBeforeConfirm: 'Vui lòng ký tên trước khi xác nhận',
+    confirm: 'Xác nhận',
+    registerAccount: 'Đăng ký tài khoản',
+    signatureConfirmed: 'Đã xác nhận chữ ký số!',
+    passwordMinLength: 'Mật khẩu phải từ 6 ký tự',
+    cannotSaveSignature: 'Không thể lưu chữ ký',
+    errorOccurred: 'Có lỗi xảy ra:',
+    signatureCancelled: 'Đã hủy chữ ký số',
+    functions: 'Chức năng',
+    home: 'Trang chủ',
+    personal: 'Cá nhân',
+    historyRegisterBuyBlood: 'Lịch sử ĐK\nnhượng máu',
+    approveBuyBloodRequest: 'Duyệt YC\nnhượng máu',
+    contactSupport: 'Liên hệ\nhỗ trợ',
+    registerBuyBloodShort: 'Đăng ký\nnhượng máu',
+    bloodDonationScheduleShort: 'Lịch\nhiến máu',
+    bloodDonationHistoryShort: 'Lịch sử\nhiến máu',
+    bloodDonationRegisterShort: 'Lịch sử\nđ.ký hiến máu',
+    yourAccount: 'Tài khoản của bạn',
+    softwareInformation: 'Thông tin phần mềm',
+    noNotificationYet: 'Bạn chưa có thông báo nào',
+    notUpdatePersonalInfo: 'Bạn chưa cập nhật thông tin cá nhân.',
+    updateNow: 'Cập nhật ngay',
+    noData: 'Không có dữ liệu',
+    pleaseUpdatePersonalInfoBefore: 'Vui lòng cập nhật thông tin cá nhân trước khi',
+    expectedArrivalDateTime: 'Ngày giờ dự kiến đến',
+    contactAddress: 'Địa chỉ liên hệ',
+    fromToDate: 'Từ {fromDate} đến {toDate}',
+    pleaseEnterApprovalQuantity: 'Vui lòng nhập số lượng duyệt',
+    pleaseEnterFullInfo: 'Vui lòng nhập đủ thông tin\nđể tiếp tục!',
+    pleaseEnterFullNameBeforeSign: 'Vui lòng nhập họ tên trước khi ký số',
+    pleaseEnterIdCardBeforeSign: 'Vui lòng nhập CCCD/Căn cước trước khi ký số',
+    pleaseEnterFeedbackContent: 'Vui lòng nhập nội dung góp ý/ phản hồi',
+    pleaseUpdatePersonalInfoBeforeFeedback: 'Vui lòng nhập cập nhật thông tin cá nhân trước khi gửi phản hồi!',
+    pleaseUpdatePersonalInfoBeforeRegister: 'Vui lòng nhập cập nhật thông tin cá nhân trước khi đăng ký hiến máu!',
+    pleaseUpdatePersonalInfoBeforeBuyBlood: 'Vui lòng nhập cập nhật thông tin cá nhân trước khi tạo yêu cầu nhượng máu!',
+    saveChanges: 'Lưu thay đổi',
+    selectDateTime: 'Chọn ngày giờ',
+    notEnterOldPassword: 'Chưa nhập mật khẩu cũ',
+    notEnterPassword: 'Chưa nhập mật khẩu',
+    changePasswordSuccess: 'Thay đổi mật khẩu thành công',
+    changePasswordFailed: 'Thay đổi mật khẩu thất bại',
+    numberOfBloodDonations: 'Số lần hiến máu',
+    welcomeBack: 'Chào mừng bạn quay trở lại!',
+    notDonatedYet: 'Bạn chưa hiến máu lần nào!',
+    daysSinceLastDonation: 'Đã {days} ngày rồi bạn chưa hiến máu!\n',
+    lastDonation: 'Lần hiến máu gần nhất của bạn: {date}',
+    notificationTitle: 'Thông báo',
+    cannotFindRoute: 'Không tìm thấy đường đi',
+    pleaseSelectBloodUnit: 'Vui lòng chọn đơn vị cấp máu.',
+    approveBuyBloodSuccess: 'Duyệt yêu cầu nhượng máu thành công.',
+    rejectBuyBloodSuccess: 'Từ chối yêu cầu nhượng máu thành công.',
+    sendSuccess: 'Gửi thành công!',
+    notEnterFullName: 'Chưa nhập họ tên',
+    invalidFullName: 'Họ tên không hợp lệ',
+    notEnterUsername: 'Chưa nhập tên tài khoản',
+    notEnterPhone: 'Chưa nhập số điện thoại',
+    invalidPhone: 'Số điện thoại không đúng',
+    qrCodeReadSuccess: 'Đã lấy thông tin từ QR code thành công!',
+    qrCodeReadError: 'Lỗi khi đọc thông tin từ QR code!',
+    qrScanError: 'Lỗi khi quét QR code!',
+    signatureSavedSuccess: 'Đã lưu chữ ký thành công!',
+    signatureNotComplete: 'Chưa hoàn thành chữ ký',
+    signatureError: 'Lỗi khi thực hiện chữ ký số:',
+    updateAccountSuccess: 'Cập nhật tài khoản thành công',
+    updateAccountFailed: 'Cập nhật tài khoản thất bại',
+    invalidIdCard: 'CCCD/Căn cước không đúng định dạng!',
+    cancelRegisterSuccess: 'Hủy đăng ký thành công',
+    cancelRegisterFailed: 'Hủy đăng ký thất bại',
+    cancelBuyBloodSuccess: 'Hủy yêu cầu nhượng máu thành công',
+    cancelBuyBloodFailed: 'Hủy yêu cầu nhượng máu thất bại',
+    updateInventorySuccess: 'Cập nhật thông tin tồn kho thành công.',
+    errorOccurredPleaseRetry: 'Có lỗi xãy ra, xin vui long thử lại sau',
+    sendOtpSuccess: 'Gửi OTP thành công',
+    time: 'Lần',
+    invalidUsername: 'Tên đăng nhập phải là CCCD/Căn cước có độ dài 9 hoặc 12 ký tự!',
+    scanIdCardToGetInfo: 'Quét CCCD/Căn cước để lấy thông tin',
+    registeringToDonate: 'Bạn đang đăng ký hiến',
+    platelets: 'tiểu cầu',
+    blood: 'máu',
+    at: 'tại:',
+    timeFrom: 'Thời gian từ',
+    day: 'ngày',
+    noDataFromToDate: 'Không có dữ liệu\r\ntừ {fromDate} đến {toDate}',
+    updateIdCard: 'Cập nhật CCCD/Căn cước',
+    here: 'Tại đây',
+    toViewDonationRegisterHistory: ' để xem lịch sử đăng ký hiến máu của bạn.',
+    toViewDonationHistory: ' để xem lịch sử hiến máu của bạn.',
+    apply: 'Áp dụng',
+    selectTimeRange: 'Chọn khoảng thời gian',
+    contactInformation: 'THÔNG TIN LIÊN HỆ',
+    contactViaFanpage: 'LIÊN HỆ QUA FANPAGE',
+    sendRequestDirectly: 'GỬI YÊU CẦU TRỰC TIẾP',
+    forgotPassword: 'Bạn quên mật khẩu?',
+    pleaseFillInfoBelow: 'Vui lòng điền các thông tin bên dưới.\nTrung tâm sẽ liên hệ để cấp lại mật khẩu cho bạn!',
+    send: 'Gửi',
+    address: 'Địa chỉ: ',
+    phone: 'Điện thoại: ',
+    extension: ' - số nội bộ ',
+    or: ' hoặc ',
+    contactDuringBusinessHours: ' (liên hệ trong giờ hành chính).',
+    version: 'Phiên bản: V.',
+    updateDate: 'Ngày cập nhật: ',
+    thankYouForUsingApp: 'Cảm ơn bạn đã sử dụng ứng dụng của chúng tôi!\nHãy để lại đánh giá để cải thiện thêm',
+    rateApp: 'ĐÁNH GIÁ APP',
   };
 
   void init(

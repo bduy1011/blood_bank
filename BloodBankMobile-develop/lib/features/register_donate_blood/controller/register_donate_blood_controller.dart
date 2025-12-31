@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:blood_donation/app/config/routes.dart';
 import 'package:blood_donation/base/base_view/base_view.dart';
+import 'package:blood_donation/core/localization/app_locale.dart';
 import 'package:blood_donation/utils/extension/datetime_extension.dart';
 import 'package:blood_donation/utils/extension/string_ext.dart';
 import 'package:flutter/material.dart';
@@ -175,7 +176,7 @@ class RegisterDonateBloodController extends BaseModelStateful {
     } else {
       ///
       await AppUtils.instance.showMessage(
-        "Vui lòng nhập cập nhật thông tin cá nhân trước khi đăng ký hiến máu!",
+        AppLocale.pleaseUpdatePersonalInfoBeforeRegister.translate(Get.context!),
         context: Get.context,
       );
       Get.offNamed(Routes.profile);
@@ -543,7 +544,7 @@ class RegisterDonateBloodController extends BaseModelStateful {
         // print('Name: $_name'); // Print the name
         // print('Email: $_email'); // Print the email
         AppUtils.instance.showMessage(
-          "Vui lòng nhập đủ thông tin\nđể tiếp tục!",
+          AppLocale.pleaseEnterFullInfo.translate(Get.context!),
           context: Get.context,
         );
         return;

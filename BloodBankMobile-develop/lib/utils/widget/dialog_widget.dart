@@ -1,4 +1,5 @@
 import 'package:blood_donation/app/theme/colors.dart';
+import 'package:blood_donation/core/localization/app_locale.dart';
 import 'package:blood_donation/utils/extension/context_ext.dart';
 import 'package:blood_donation/utils/widget/spacer_widget.dart';
 import 'package:flutter/material.dart';
@@ -77,7 +78,7 @@ class AppDialog extends StatelessWidget {
                                 .copyWith(color: Colors.white),
                             buttonColor: AppColor.mainColor,
                             onPressed: () => Get.back(),
-                            title: "Hủy",
+                            title: AppLocale.cancel.translate(context),
                             buttonHeight: 45,
                           ),
                         ),
@@ -90,7 +91,7 @@ class AppDialog extends StatelessWidget {
                                 .copyWith(color: Colors.white),
                             buttonColor: AppColor.mainColor,
                             onPressed: onTap ?? () => Get.back(),
-                            title: buttonTitle ?? "Đóng",
+                            title: buttonTitle ?? AppLocale.back.translate(context),
                             buttonHeight: 45,
                           ),
                         ),
@@ -101,7 +102,7 @@ class AppDialog extends StatelessWidget {
                           .copyWith(color: Colors.white),
                       buttonColor: AppColor.mainColor,
                       onPressed: onTap ?? () => Get.back(),
-                      title: buttonTitle ?? "Đóng",
+                      title: buttonTitle ?? AppLocale.close.translate(context),
                       buttonHeight: 45,
                     ),
             ],
@@ -170,12 +171,12 @@ class AppOptionalDialog extends StatelessWidget {
                     AppTextButton(
                       style: context.myTheme.buttonThemeT1.button.copyWith(),
                       onPressed: () => onPressedBtn(),
-                      title: buttonTitle ?? 'Đồng ý',
+                      title: buttonTitle ?? AppLocale.accept.translate(context),
                     ),
                     AppTextButton(
                       style: context.myTheme.textThemeT1.button,
                       onPressed: () => onPressedAltBtn(),
-                      title: altButtonTitle ?? 'Hủy',
+                      title: altButtonTitle ?? AppLocale.cancel.translate(context),
                     )
                   ],
                 )

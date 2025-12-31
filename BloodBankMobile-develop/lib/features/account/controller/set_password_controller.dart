@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:blood_donation/core/localization/app_locale.dart';
 import 'package:blood_donation/utils/extension/getx_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -65,12 +66,12 @@ class SetPasswordController extends BaseModelStateful {
     var confirmPassword = confirmPasswordRegisterController.text;
 
     if (password.trim().isEmpty) {
-      AppUtils.instance.showToast("Chưa nhập mật khẩu");
+      AppUtils.instance.showToast(AppLocale.notEnterPassword.translate(Get.context!));
       return;
     }
     if (password.trim() != confirmPassword.trim()) {
       AppUtils.instance
-          .showToast("Mật khẩu và xác nhận mật khẩu không giống nhau");
+          .showToast(AppLocale.passwordNotMatch.translate(Get.context!));
       return;
     }
 
@@ -91,14 +92,14 @@ class SetPasswordController extends BaseModelStateful {
       if (response.status == 200) {
         await appCenter.backendProvider.saveAuthentication(authenticated!);
         autoGotoHomePage();
-        AppUtils.instance.showToast("Cập nhật tài khoản thành công");
+        AppUtils.instance.showToast(AppLocale.updateAccountSuccess.translate(Get.context!));
         return;
       }
-      AppUtils.instance.showToast("Cập nhật tài khoản thất bại");
+      AppUtils.instance.showToast(AppLocale.updateAccountFailed.translate(Get.context!));
     } catch (e, t) {
       log("setPassword()", error: e, stackTrace: t);
       // TODO
-      AppUtils.instance.showToast("Cập nhật tài khoản thất bại");
+      AppUtils.instance.showToast(AppLocale.updateAccountFailed.translate(Get.context!));
     }
     hideLoading();
   }

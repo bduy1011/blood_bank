@@ -374,11 +374,11 @@ class _BloodLocationsDonatePageState extends BaseViewStateful<
           child: RichText(
             textAlign: TextAlign.center,
             text: TextSpan(
-              text: 'Cập nhật CCCD/Căn cước',
+              text: AppLocale.updateIdCard.translate(context),
               style: context.myTheme.textThemeT1.body,
               children: [
                 TextSpan(
-                  text: 'Tại đây',
+                  text: AppLocale.here.translate(context),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () async {
                       ///
@@ -388,8 +388,8 @@ class _BloodLocationsDonatePageState extends BaseViewStateful<
                   style: context.myTheme.textThemeT1.body.copyWith(
                       fontWeight: FontWeight.w500, color: AppColor.mainColor),
                 ),
-                const TextSpan(
-                  text: ' để xem lịch sử đăng ký hiến máu của bạn.',
+                TextSpan(
+                  text: AppLocale.toViewDonationRegisterHistory.translate(context),
                 )
               ],
             ),
@@ -406,7 +406,7 @@ class _BloodLocationsDonatePageState extends BaseViewStateful<
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30),
         child: Text(
-          'Không có dữ liệu từ ngày ${controller.startDate?.ddmmyyyy} đến ngày  ${controller.endDate?.ddmmyyyy}',
+          '${AppLocale.noData.translate(context)} ${AppLocale.fromToDate.translate(context).replaceAll('{fromDate}', controller.startDate?.ddmmyyyy ?? '').replaceAll('{toDate}', controller.endDate?.ddmmyyyy ?? '')}',
           style: Get.context?.myTheme.textThemeT1.body,
           textAlign: TextAlign.center,
         ),
