@@ -287,6 +287,45 @@ mixin class AppLocale {
   static const String selectImageFromGallery = 'selectImageFromGallery';
   static const String noQRCodeFoundInImage = 'noQRCodeFoundInImage';
   static const String failedToReadQRFromImage = 'failedToReadQRFromImage';
+  // Digital signature flow
+  static const String receptionStep = 'reception_step';
+  static const String receptionStepTitle = 'reception_step_title';
+  static const String receptionStepDescription = 'reception_step_description';
+  static const String donorSignature = 'donor_signature';
+  static const String measureVitalSigns = 'measure_vital_signs';
+  static const String measureVitalSignsTitle = 'measure_vital_signs_title';
+  static const String bloodPressure = 'blood_pressure';
+  static const String heartRate = 'heart_rate';
+  static const String temperature = 'temperature';
+  static const String systolic = 'systolic';
+  static const String diastolic = 'diastolic';
+  static const String bpm = 'bpm';
+  static const String celsius = 'celsius';
+  static const String preDonationTest = 'pre_donation_test';
+  static const String preDonationTestTitle = 'pre_donation_test_title';
+  static const String staffSignature = 'staff_signature';
+  static const String doctorConfirmation = 'doctor_confirmation';
+  static const String doctorConfirmationTitle = 'doctor_confirmation_title';
+  static const String doctorSignature = 'doctor_signature';
+  static const String nurseBloodDraw = 'nurse_blood_draw';
+  static const String nurseBloodDrawTitle = 'nurse_blood_draw_title';
+  static const String nurseSignature = 'nurse_signature';
+  static const String completeBloodDonation = 'complete_blood_donation';
+  static const String thankYouLetterSent = 'thank_you_letter_sent';
+  static const String pleaseEnterVitalSigns = 'please_enter_vital_signs';
+  static const String pleaseSignToContinue = 'please_sign_to_continue';
+  static const String stepCompleted = 'step_completed';
+  static const String stepFailed = 'step_failed';
+  static const String updateStatusSuccess = 'update_status_success';
+  static const String updateStatusFailed = 'update_status_failed';
+  static const String sendThankYouLetterSuccess = 'send_thank_you_letter_success';
+  static const String sendThankYouLetterFailed = 'send_thank_you_letter_failed';
+  static const String bloodDonationCompleted = 'blood_donation_completed';
+  static const String updateSignature = 'update_signature';
+  static const String clear = 'clear';
+  static const String pleaseSignAsStaff = 'please_sign_as_staff';
+  static const String pleaseSignAsDoctor = 'please_sign_as_doctor';
+  static const String pleaseSignAsNurse = 'please_sign_as_nurse';
 
   static const Map<String, dynamic> EN = {
     homeBook: 'Book appointment',
@@ -535,6 +574,45 @@ mixin class AppLocale {
     selectImageFromGallery: 'Select image from gallery',
     noQRCodeFoundInImage: 'No QR code found in the selected image',
     failedToReadQRFromImage: 'Failed to read QR code from image',
+    // Digital signature flow
+    receptionStep: 'Reception',
+    receptionStepTitle: 'Reception - Donor Signature',
+    receptionStepDescription: 'Please sign your name to confirm reception',
+    donorSignature: 'Donor Signature',
+    measureVitalSigns: 'Measure Vital Signs',
+    measureVitalSignsTitle: 'Measure Vital Signs',
+    bloodPressure: 'Blood Pressure',
+    heartRate: 'Heart Rate',
+    temperature: 'Temperature',
+    systolic: 'Systolic',
+    diastolic: 'Diastolic',
+    bpm: 'bpm',
+    celsius: '°C',
+    preDonationTest: 'Pre-donation Test',
+    preDonationTestTitle: 'Pre-donation Test - Staff Signature',
+    staffSignature: 'Staff Signature',
+    doctorConfirmation: 'Doctor Confirmation',
+    doctorConfirmationTitle: 'Doctor Confirmation - Doctor Signature',
+    doctorSignature: 'Doctor Signature',
+    nurseBloodDraw: 'Nurse Blood Draw',
+    nurseBloodDrawTitle: 'Nurse Blood Draw - Nurse Signature',
+    nurseSignature: 'Nurse Signature',
+    completeBloodDonation: 'Complete Blood Donation',
+    thankYouLetterSent: 'Thank you letter has been sent',
+    pleaseEnterVitalSigns: 'Please enter all vital signs',
+    pleaseSignToContinue: 'Please sign to continue',
+    stepCompleted: 'Step completed successfully',
+    stepFailed: 'Step failed. Please try again',
+    updateStatusSuccess: 'Status updated successfully',
+    updateStatusFailed: 'Failed to update status',
+    sendThankYouLetterSuccess: 'Thank you letter sent successfully',
+    sendThankYouLetterFailed: 'Failed to send thank you letter',
+    bloodDonationCompleted: 'Blood donation completed successfully!',
+    updateSignature: 'Update Signature',
+    clear: 'Clear',
+    pleaseSignAsStaff: 'Please sign as staff member',
+    pleaseSignAsDoctor: 'Please sign as doctor',
+    pleaseSignAsNurse: 'Please sign as nurse',
   };
 
   static const Map<String, dynamic> VI = {
@@ -783,6 +861,45 @@ mixin class AppLocale {
     selectImageFromGallery: 'Chọn ảnh từ thư viện',
     noQRCodeFoundInImage: 'Không tìm thấy QR code trong ảnh đã chọn',
     failedToReadQRFromImage: 'Không thể đọc QR code từ ảnh',
+    // Digital signature flow
+    receptionStep: 'Tiếp nhận',
+    receptionStepTitle: 'Tiếp nhận - Người hiến máu ký tên',
+    receptionStepDescription: 'Vui lòng ký tên của bạn để xác nhận tiếp nhận',
+    donorSignature: 'Chữ ký người hiến máu',
+    measureVitalSigns: 'Đo chỉ số sinh tồn',
+    measureVitalSignsTitle: 'Đo chỉ số sinh tồn',
+    bloodPressure: 'Huyết áp',
+    heartRate: 'Nhịp tim',
+    temperature: 'Nhiệt độ',
+    systolic: 'Tâm thu',
+    diastolic: 'Tâm trương',
+    bpm: 'lần/phút',
+    celsius: '°C',
+    preDonationTest: 'Xét nghiệm trước hiến máu',
+    preDonationTestTitle: 'Xét nghiệm trước hiến máu - Nhân viên ký số',
+    staffSignature: 'Chữ ký nhân viên',
+    doctorConfirmation: 'Bác sĩ xác nhận',
+    doctorConfirmationTitle: 'Bác sĩ xác nhận - Bác sĩ ký số',
+    doctorSignature: 'Chữ ký bác sĩ',
+    nurseBloodDraw: 'Điều dưỡng rút máu',
+    nurseBloodDrawTitle: 'Điều dưỡng rút máu - Điều dưỡng ký số',
+    nurseSignature: 'Chữ ký điều dưỡng',
+    completeBloodDonation: 'Hoàn thành hiến máu',
+    thankYouLetterSent: 'Đã gửi thư cảm ơn',
+    pleaseEnterVitalSigns: 'Vui lòng nhập đầy đủ chỉ số sinh tồn',
+    pleaseSignToContinue: 'Vui lòng ký để tiếp tục',
+    stepCompleted: 'Hoàn thành bước thành công',
+    stepFailed: 'Bước thất bại. Vui lòng thử lại',
+    updateStatusSuccess: 'Cập nhật trạng thái thành công',
+    updateStatusFailed: 'Cập nhật trạng thái thất bại',
+    sendThankYouLetterSuccess: 'Gửi thư cảm ơn thành công',
+    sendThankYouLetterFailed: 'Gửi thư cảm ơn thất bại',
+    bloodDonationCompleted: 'Hoàn thành hiến máu thành công!',
+    updateSignature: 'Cập nhật chữ ký',
+    clear: 'Xóa',
+    pleaseSignAsStaff: 'Vui lòng ký tên với tư cách nhân viên',
+    pleaseSignAsDoctor: 'Vui lòng ký tên với tư cách bác sĩ',
+    pleaseSignAsNurse: 'Vui lòng ký tên với tư cách điều dưỡng',
   };
 
   void init(

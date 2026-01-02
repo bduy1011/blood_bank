@@ -3,6 +3,9 @@ import 'package:blood_donation/base/base_view/base_view_stateful.dart';
 import 'package:blood_donation/core/localization/app_locale.dart';
 import 'package:blood_donation/features/register_donate_blood/widgets/register_donate_blood_page_second.dart';
 import 'package:blood_donation/features/register_donate_blood/widgets/register_donate_blood_question.dart';
+import 'package:blood_donation/features/register_donate_blood/widgets/register_donate_blood_vital_signs_page.dart';
+import 'package:blood_donation/features/register_donate_blood/widgets/register_donate_blood_reception_page.dart';
+import 'package:blood_donation/features/register_donate_blood/widgets/register_donate_blood_pre_test_page.dart';
 import 'package:blood_donation/utils/extension/context_ext.dart';
 import 'package:flutter/material.dart';
 
@@ -74,17 +77,31 @@ class _RegisterDonateBloodPageState extends BaseViewStateful<
 
   Widget _buildPageContent() {
     switch (controller.page) {
-      // case 1:
-      //   return RegisterDonateBloodPageFirst(
-      //       state: controller, key: const ValueKey(1));
       case 2:
         return RegisterDonateBloodPageSecond(
             state: controller, key: const ValueKey(2));
       case 3:
         return RegisterDonateBloodQuestion(
             state: controller, key: const ValueKey(3));
+      case 4:
+        return RegisterDonateBloodReceptionPage(
+            state: controller, key: const ValueKey(4));
+      case 5:
+        return RegisterDonateBloodVitalSignsPage(
+            state: controller, key: const ValueKey(5));
+      case 6:
+        return RegisterDonateBloodPreTestPage(
+            state: controller, key: const ValueKey(6));
+      case 7:
+        return RegisterDonateBloodDoctorPage(
+            state: controller, key: const ValueKey(7));
+      case 8:
+        return RegisterDonateBloodNursePage(
+            state: controller, key: const ValueKey(8));
       default:
-        return Container();
+        // Default to form page (page 2)
+        return RegisterDonateBloodPageSecond(
+            state: controller, key: const ValueKey(2));
     }
   }
 }

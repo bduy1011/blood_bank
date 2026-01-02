@@ -7,8 +7,9 @@ class TinhTrangDangKyHienMau {
   static const DaDangKy = TinhTrangDangKyHienMau._("Đã đăng ký", 1);
   static const Huy = TinhTrangDangKyHienMau._("Huỷ", 2);
   static const DaTiepNhan = TinhTrangDangKyHienMau._("Đã tiếp nhận", 3);
+  static const DaHienMau = TinhTrangDangKyHienMau._("Đã hiến máu", 4);
 
-  static const values = [DaDangKy, Huy, DaTiepNhan];
+  static const values = [DaDangKy, Huy, DaTiepNhan, DaHienMau];
 }
 
 class NhomMau {

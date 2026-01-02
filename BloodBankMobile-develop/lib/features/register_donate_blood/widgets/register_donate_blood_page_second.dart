@@ -280,6 +280,30 @@ class _RegisterDonateBloodPageSecondState
                   ),
                 ],
               ),
+              const SizedBox(height: 10),
+              // Nút để vào thẳng màn ký tên (reception)
+              Center(
+                child: TextButton.icon(
+                  onPressed: () {
+                    widget.state.updateNextPage(4);
+                  },
+                  icon: const Icon(
+                    Icons.edit,
+                    color: AppColor.mainColor,
+                  ),
+                  label: Text(
+                    'Vào màn ký tên',
+                    style: context.myTheme.textThemeT1.title
+                        .copyWith(color: AppColor.mainColor),
+                  ),
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 10,
+                    ),
+                  ),
+                ),
+              ),
               const SizedBox(height: 20),
             ],
           ),

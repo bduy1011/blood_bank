@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:blood_donation/app/app_util/enum.dart';
 import 'package:blood_donation/base/base_view/base_view.dart';
 import 'package:blood_donation/core/localization/app_locale.dart';
@@ -22,6 +20,9 @@ class ProfileController extends BaseModelStateful {
   final TextEditingController phoneNumberController = TextEditingController();
   final TextEditingController passwordNumberController =
       TextEditingController();
+
+  // TODO: Remove this flag when API is ready
+  static const bool bypassUpdateAPI = true; // Set to false when API is ready
 
   String? get note => getNote();
 
@@ -80,20 +81,61 @@ class ProfileController extends BaseModelStateful {
 
     ///
     try {
+      // TODO: Remove bypass when API is ready
+      if (bypassUpdateAPI) {
+        showLoading();
+        // Simulate API delay
+        await Future.delayed(const Duration(milliseconds: 500));
+        
+        // Update local state without calling API
+        if (appCenter.authentication != null) {
+          appCenter.authentication!.phoneNumber = phoneNumber;
+          appCenter.authentication!.name = fullnameController.text.trim();
+          appCenter.authentication!.cmnd = cccd; // Ensure cmnd is set
+          
+          // Save to storage
+          await backendProvider.saveAuthentication(appCenter.authentication!);
+          
+          // Reload from storage to ensure sync
+          var savedAuth = appCenter.localStorage.authentication;
+          if (savedAuth != null) {
+            appCenter.setAuthentication(savedAuth);
+          } else {
+            // If not in storage, ensure current authentication is set
+            appCenter.setAuthentication(appCenter.authentication);
+          }
+        }
+        
+        AppUtils.instance.showToast(AppLocale.updateAccountSuccess.translate(Get.context!));
+        hideLoading();
+        refresh();
+        Get.findOrNull<HomeController>()?.onRefresh();
+        
+        // In bypass mode, if user came from another page (can pop), auto go back
+        // This allows user to return to register donate blood page automatically
+        var navigator = Get.key.currentState;
+        if (navigator != null && navigator.canPop()) {
+          // User came from another page (like register donate blood), go back
+          Get.back();
+        }
+        // If can't pop, user stays on profile page
+        return;
+      }
+
       var body = {
         "userCode": appCenter.authentication?.userCode,
         "name": fullnameController.text.trim(),
         "phoneNumber": phoneNumber,
         "password": "",
         "idCardNr": cccd,
-        "appRole": appCenter.authentication?.appRole,
+        "appRole": appCenter.authentication?.appRole ?? 30, // Default to User role if null
         "active": true,
       };
       showLoading();
       var isModIdCard = idCardController.text != appCenter.authentication?.cmnd;
       var response = await backendProvider.updateAccount(
         body: body,
-        code: appCenter.authentication?.userCode ?? "",
+        code: appCenter.authentication!.userCode!,
         isModIdCard: isModIdCard,
       );
       if (response.status == 200) {
@@ -125,9 +167,9 @@ class ProfileController extends BaseModelStateful {
         Get.findOrNull<HomeController>()?.onRefresh();
 
         ///
-        if (dmNguoiHienMau != null) {
-          backToHome();
-        }
+        // Don't auto navigate to home - let user manually navigate
+        // This prevents interrupting user flow when they come from register donate blood page
+        // User can press back button to return to previous page
 
         return;
       }
