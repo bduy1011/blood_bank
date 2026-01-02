@@ -173,27 +173,38 @@ mixin class AppLocale {
   static const String approveBuyBloodRequest = 'approve_buy_blood_request';
   static const String contactSupport = 'contact_support';
   static const String registerBuyBloodShort = 'register_buy_blood_short';
-  static const String bloodDonationScheduleShort = 'blood_donation_schedule_short';
-  static const String bloodDonationHistoryShort = 'blood_donation_history_short';
-  static const String bloodDonationRegisterShort = 'blood_donation_register_short';
+  static const String bloodDonationScheduleShort =
+      'blood_donation_schedule_short';
+  static const String bloodDonationHistoryShort =
+      'blood_donation_history_short';
+  static const String bloodDonationRegisterShort =
+      'blood_donation_register_short';
   static const String yourAccount = 'your_account';
   static const String softwareInformation = 'software_information';
   static const String noNotificationYet = 'no_notification_yet';
   static const String notUpdatePersonalInfo = 'not_update_personal_info';
   static const String updateNow = 'update_now';
   static const String noData = 'no_data';
-  static const String pleaseUpdatePersonalInfoBefore = 'please_update_personal_info_before';
+  static const String pleaseUpdatePersonalInfoBefore =
+      'please_update_personal_info_before';
   static const String expectedArrivalDateTime = 'expected_arrival_date_time';
   static const String contactAddress = 'contact_address';
   static const String fromToDate = 'from_to_date';
-  static const String pleaseEnterApprovalQuantity = 'please_enter_approval_quantity';
+  static const String pleaseEnterApprovalQuantity =
+      'please_enter_approval_quantity';
   static const String pleaseEnterFullInfo = 'please_enter_full_info';
-  static const String pleaseEnterFullNameBeforeSign = 'please_enter_full_name_before_sign';
-  static const String pleaseEnterIdCardBeforeSign = 'please_enter_id_card_before_sign';
-  static const String pleaseEnterFeedbackContent = 'please_enter_feedback_content';
-  static const String pleaseUpdatePersonalInfoBeforeFeedback = 'please_update_personal_info_before_feedback';
-  static const String pleaseUpdatePersonalInfoBeforeRegister = 'please_update_personal_info_before_register';
-  static const String pleaseUpdatePersonalInfoBeforeBuyBlood = 'please_update_personal_info_before_buy_blood';
+  static const String pleaseEnterFullNameBeforeSign =
+      'please_enter_full_name_before_sign';
+  static const String pleaseEnterIdCardBeforeSign =
+      'please_enter_id_card_before_sign';
+  static const String pleaseEnterFeedbackContent =
+      'please_enter_feedback_content';
+  static const String pleaseUpdatePersonalInfoBeforeFeedback =
+      'please_update_personal_info_before_feedback';
+  static const String pleaseUpdatePersonalInfoBeforeRegister =
+      'please_update_personal_info_before_register';
+  static const String pleaseUpdatePersonalInfoBeforeBuyBlood =
+      'please_update_personal_info_before_buy_blood';
   static const String saveChanges = 'save_changes';
   static const String selectDateTime = 'select_date_time';
   static const String notEnterOldPassword = 'not_enter_old_password';
@@ -244,7 +255,8 @@ mixin class AppLocale {
   static const String noDataFromToDate = 'no_data_from_to_date';
   static const String updateIdCard = 'update_id_card';
   static const String here = 'here';
-  static const String toViewDonationRegisterHistory = 'to_view_donation_register_history';
+  static const String toViewDonationRegisterHistory =
+      'to_view_donation_register_history';
   static const String toViewDonationHistory = 'to_view_donation_history';
   static const String apply = 'apply';
   static const String contactInformation = 'contact_information';
@@ -258,11 +270,23 @@ mixin class AppLocale {
   static const String phone = 'phone';
   static const String extension = 'extension';
   static const String or = 'or';
-  static const String contactDuringBusinessHours = 'contact_during_business_hours';
+  static const String contactDuringBusinessHours =
+      'contact_during_business_hours';
   static const String version = 'version';
   static const String updateDate = 'update_date';
   static const String thankYouForUsingApp = 'thank_you_for_using_app';
   static const String rateApp = 'rate_app';
+  // Biometric
+  static const String loginWithBiometric = 'loginWithBiometric';
+  static const String biometricNotAvailable = 'biometricNotAvailable';
+  static const String biometricNotEnrolled = 'biometricNotEnrolled';
+  static const String biometricAuthFailed = 'biometricAuthFailed';
+  static const String biometricAuthSuccess = 'biometricAuthSuccess';
+  static const String enableBiometricLogin = 'enableBiometricLogin';
+  static const String biometricAuthReason = 'biometricAuthReason';
+  static const String selectImageFromGallery = 'selectImageFromGallery';
+  static const String noQRCodeFoundInImage = 'noQRCodeFoundInImage';
+  static const String failedToReadQRFromImage = 'failedToReadQRFromImage';
 
   static const Map<String, dynamic> EN = {
     homeBook: 'Book appointment',
@@ -367,7 +391,8 @@ mixin class AppLocale {
     language: 'Language',
     english: 'English',
     vietnamese: 'Vietnamese',
-    thankYouMessage: 'Sincere thanks to Medcomtech Company for accompanying Cho Ray Blood Transfusion Center in voluntary blood donation activities.',
+    thankYouMessage:
+        'Sincere thanks to Medcomtech Company for accompanying Cho Ray Blood Transfusion Center in voluntary blood donation activities.',
     confirmDeleteAccount: 'Confirm delete account',
     deleteAccountMessage: 'Your account will be deleted\npermanently',
     deleteAccountSuccess: 'Account deleted successfully',
@@ -379,7 +404,8 @@ mixin class AppLocale {
     cameraError: 'Camera error',
     cameraInitError: 'Camera initialization error',
     qrScanInstruction: 'Place the QR code on your ID card in the frame',
-    cannotInitCamera: 'Cannot initialize camera. Please rebuild the app and grant camera permission.\nError:',
+    cannotInitCamera:
+        'Cannot initialize camera. Please rebuild the app and grant camera permission.\nError:',
     error: 'Error',
     cannotReadQRCode: 'Cannot read information from QR code:',
     passwordNotMatch: 'Password and confirm password do not match',
@@ -418,9 +444,12 @@ mixin class AppLocale {
     pleaseEnterFullNameBeforeSign: 'Please enter full name before signing',
     pleaseEnterIdCardBeforeSign: 'Please enter ID card before signing',
     pleaseEnterFeedbackContent: 'Please enter feedback content',
-    pleaseUpdatePersonalInfoBeforeFeedback: 'Please update personal information before sending feedback!',
-    pleaseUpdatePersonalInfoBeforeRegister: 'Please update personal information before registering to donate blood!',
-    pleaseUpdatePersonalInfoBeforeBuyBlood: 'Please update personal information before creating blood concession request!',
+    pleaseUpdatePersonalInfoBeforeFeedback:
+        'Please update personal information before sending feedback!',
+    pleaseUpdatePersonalInfoBeforeRegister:
+        'Please update personal information before registering to donate blood!',
+    pleaseUpdatePersonalInfoBeforeBuyBlood:
+        'Please update personal information before creating blood concession request!',
     saveChanges: 'Save changes',
     selectDateTime: 'Select date and time',
     notEnterOldPassword: 'Please enter old password',
@@ -430,7 +459,8 @@ mixin class AppLocale {
     numberOfBloodDonations: 'Number of blood donations',
     welcomeBack: 'Welcome back!',
     notDonatedYet: "You haven't donated blood yet!",
-    daysSinceLastDonation: "It's been {days} days since you last donated blood!\n",
+    daysSinceLastDonation:
+        "It's been {days} days since you last donated blood!\n",
     lastDonation: 'Your last blood donation: {date}',
     notificationTitle: 'Notification',
     cannotFindRoute: 'Cannot find route',
@@ -471,7 +501,8 @@ mixin class AppLocale {
     noDataFromToDate: 'No data\nfrom {fromDate} to {toDate}',
     updateIdCard: 'Update ID card',
     here: 'Here',
-    toViewDonationRegisterHistory: ' to view your blood donation registration history.',
+    toViewDonationRegisterHistory:
+        ' to view your blood donation registration history.',
     toViewDonationHistory: ' to view your blood donation history.',
     apply: 'Apply',
     selectTimeRange: 'Select time range',
@@ -479,7 +510,8 @@ mixin class AppLocale {
     contactViaFanpage: 'CONTACT VIA FANPAGE',
     sendRequestDirectly: 'SEND REQUEST DIRECTLY',
     forgotPassword: 'Did you forget your password?',
-    pleaseFillInfoBelow: 'Please fill in the information below.\nThe center will contact you to reset your password!',
+    pleaseFillInfoBelow:
+        'Please fill in the information below.\nThe center will contact you to reset your password!',
     send: 'Send',
     address: 'Address: ',
     phone: 'Phone: ',
@@ -488,8 +520,21 @@ mixin class AppLocale {
     contactDuringBusinessHours: ' (contact during business hours).',
     version: 'Version: V.',
     updateDate: 'Update date: ',
-    thankYouForUsingApp: 'Thank you for using our app!\nPlease leave a review to help us improve',
+    thankYouForUsingApp:
+        'Thank you for using our app!\nPlease leave a review to help us improve',
     rateApp: 'RATE APP',
+    // Biometric
+    loginWithBiometric: 'Login with fingerprint/Face ID',
+    biometricNotAvailable:
+        'Biometric authentication is not available on this device',
+    biometricNotEnrolled: 'No biometric credentials found. Please login first.',
+    biometricAuthFailed: 'Biometric authentication failed',
+    biometricAuthSuccess: 'Login successful',
+    enableBiometricLogin: 'Enable biometric login',
+    biometricAuthReason: 'Please authenticate to login',
+    selectImageFromGallery: 'Select image from gallery',
+    noQRCodeFoundInImage: 'No QR code found in the selected image',
+    failedToReadQRFromImage: 'Failed to read QR code from image',
   };
 
   static const Map<String, dynamic> VI = {
@@ -594,7 +639,8 @@ mixin class AppLocale {
     language: 'Ngôn ngữ',
     english: 'Tiếng Anh',
     vietnamese: 'Tiếng Việt',
-    thankYouMessage: 'Chân thành cảm ơn Công ty Medcomtech đã đồng hành cùng Trung tâm Truyền máu Chợ Rẫy trong hoạt động vận động hiến máu tình nguyện.',
+    thankYouMessage:
+        'Chân thành cảm ơn Công ty Medcomtech đã đồng hành cùng Trung tâm Truyền máu Chợ Rẫy trong hoạt động vận động hiến máu tình nguyện.',
     confirmDeleteAccount: 'Xác nhận xóa tài khoản',
     deleteAccountMessage: 'Tài khoản của bạn sẽ bị xóa\nvĩnh viễn',
     deleteAccountSuccess: 'Xóa tài khoản thành công',
@@ -606,7 +652,8 @@ mixin class AppLocale {
     cameraError: 'Lỗi camera',
     cameraInitError: 'Lỗi khởi tạo camera',
     qrScanInstruction: 'Đưa mã QR trên căn cước công dân vào khung',
-    cannotInitCamera: 'Không thể khởi tạo camera. Vui lòng rebuild app và cấp quyền camera.\nLỗi:',
+    cannotInitCamera:
+        'Không thể khởi tạo camera. Vui lòng rebuild app và cấp quyền camera.\nLỗi:',
     error: 'Lỗi',
     cannotReadQRCode: 'Không thể đọc thông tin từ QR code:',
     passwordNotMatch: 'Mật khẩu và xác nhận mật khẩu không giống nhau',
@@ -636,7 +683,8 @@ mixin class AppLocale {
     notUpdatePersonalInfo: 'Bạn chưa cập nhật thông tin cá nhân.',
     updateNow: 'Cập nhật ngay',
     noData: 'Không có dữ liệu',
-    pleaseUpdatePersonalInfoBefore: 'Vui lòng cập nhật thông tin cá nhân trước khi',
+    pleaseUpdatePersonalInfoBefore:
+        'Vui lòng cập nhật thông tin cá nhân trước khi',
     expectedArrivalDateTime: 'Ngày giờ dự kiến đến',
     contactAddress: 'Địa chỉ liên hệ',
     fromToDate: 'Từ {fromDate} đến {toDate}',
@@ -645,9 +693,12 @@ mixin class AppLocale {
     pleaseEnterFullNameBeforeSign: 'Vui lòng nhập họ tên trước khi ký số',
     pleaseEnterIdCardBeforeSign: 'Vui lòng nhập CCCD/Căn cước trước khi ký số',
     pleaseEnterFeedbackContent: 'Vui lòng nhập nội dung góp ý/ phản hồi',
-    pleaseUpdatePersonalInfoBeforeFeedback: 'Vui lòng nhập cập nhật thông tin cá nhân trước khi gửi phản hồi!',
-    pleaseUpdatePersonalInfoBeforeRegister: 'Vui lòng nhập cập nhật thông tin cá nhân trước khi đăng ký hiến máu!',
-    pleaseUpdatePersonalInfoBeforeBuyBlood: 'Vui lòng nhập cập nhật thông tin cá nhân trước khi tạo yêu cầu nhượng máu!',
+    pleaseUpdatePersonalInfoBeforeFeedback:
+        'Vui lòng nhập cập nhật thông tin cá nhân trước khi gửi phản hồi!',
+    pleaseUpdatePersonalInfoBeforeRegister:
+        'Vui lòng nhập cập nhật thông tin cá nhân trước khi đăng ký hiến máu!',
+    pleaseUpdatePersonalInfoBeforeBuyBlood:
+        'Vui lòng nhập cập nhật thông tin cá nhân trước khi tạo yêu cầu nhượng máu!',
     saveChanges: 'Lưu thay đổi',
     selectDateTime: 'Chọn ngày giờ',
     notEnterOldPassword: 'Chưa nhập mật khẩu cũ',
@@ -687,7 +738,8 @@ mixin class AppLocale {
     errorOccurredPleaseRetry: 'Có lỗi xãy ra, xin vui long thử lại sau',
     sendOtpSuccess: 'Gửi OTP thành công',
     time: 'Lần',
-    invalidUsername: 'Tên đăng nhập phải là CCCD/Căn cước có độ dài 9 hoặc 12 ký tự!',
+    invalidUsername:
+        'Tên đăng nhập phải là CCCD/Căn cước có độ dài 9 hoặc 12 ký tự!',
     scanIdCardToGetInfo: 'Quét CCCD/Căn cước để lấy thông tin',
     registeringToDonate: 'Bạn đang đăng ký hiến',
     platelets: 'tiểu cầu',
@@ -706,7 +758,8 @@ mixin class AppLocale {
     contactViaFanpage: 'LIÊN HỆ QUA FANPAGE',
     sendRequestDirectly: 'GỬI YÊU CẦU TRỰC TIẾP',
     forgotPassword: 'Bạn quên mật khẩu?',
-    pleaseFillInfoBelow: 'Vui lòng điền các thông tin bên dưới.\nTrung tâm sẽ liên hệ để cấp lại mật khẩu cho bạn!',
+    pleaseFillInfoBelow:
+        'Vui lòng điền các thông tin bên dưới.\nTrung tâm sẽ liên hệ để cấp lại mật khẩu cho bạn!',
     send: 'Gửi',
     address: 'Địa chỉ: ',
     phone: 'Điện thoại: ',
@@ -715,8 +768,21 @@ mixin class AppLocale {
     contactDuringBusinessHours: ' (liên hệ trong giờ hành chính).',
     version: 'Phiên bản: V.',
     updateDate: 'Ngày cập nhật: ',
-    thankYouForUsingApp: 'Cảm ơn bạn đã sử dụng ứng dụng của chúng tôi!\nHãy để lại đánh giá để cải thiện thêm',
+    thankYouForUsingApp:
+        'Cảm ơn bạn đã sử dụng ứng dụng của chúng tôi!\nHãy để lại đánh giá để cải thiện thêm',
     rateApp: 'ĐÁNH GIÁ APP',
+    // Biometric
+    loginWithBiometric: 'Đăng nhập bằng vân tay, Face ID',
+    biometricNotAvailable: 'Thiết bị không hỗ trợ xác thực sinh trắc học',
+    biometricNotEnrolled:
+        'Chưa có thông tin đăng nhập. Vui lòng đăng nhập trước.',
+    biometricAuthFailed: 'Xác thực sinh trắc học thất bại',
+    biometricAuthSuccess: 'Đăng nhập thành công',
+    enableBiometricLogin: 'Bật đăng nhập bằng sinh trắc học',
+    biometricAuthReason: 'Vui lòng xác thực để đăng nhập',
+    selectImageFromGallery: 'Chọn ảnh từ thư viện',
+    noQRCodeFoundInImage: 'Không tìm thấy QR code trong ảnh đã chọn',
+    failedToReadQRFromImage: 'Không thể đọc QR code từ ảnh',
   };
 
   void init(

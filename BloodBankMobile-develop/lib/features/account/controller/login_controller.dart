@@ -4,13 +4,13 @@ import 'package:blood_donation/base/base_view/base_view.dart';
 import 'package:blood_donation/core/localization/app_locale.dart';
 import 'package:blood_donation/models/authentication.dart';
 import 'package:blood_donation/utils/app_utils.dart';
+import 'package:blood_donation/utils/biometric_auth_service.dart';
+import 'package:blood_donation/utils/agoris_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../app/config/routes.dart';
-import '../../../models/citizen.dart';
-import '../../scan_qr_code/scan_qr_code_screen.dart';
 
 class LoginController extends BaseModelStateful {
   ///
@@ -51,6 +51,127 @@ class LoginController extends BaseModelStateful {
   Future<void> setUserName() async {
     ///
     prefs?.setString("userName", usernameController.text);
+  }
+
+  /// Lưu credentials (mã hóa) để dùng cho biometric login
+  Future<void> saveBiometricCredentials(String username, String password) async {
+    try {
+      final encryptedUsername = AlgorisUtils.encrypt(username);
+      final encryptedPassword = AlgorisUtils.encrypt(password);
+      await prefs?.setString("biometric_username", encryptedUsername);
+      await prefs?.setString("biometric_password", encryptedPassword);
+      await prefs?.setBool("biometric_enabled", true);
+    } catch (e) {
+      log("saveBiometricCredentials error: $e");
+    }
+  }
+
+  /// Xóa credentials đã lưu
+  Future<void> clearBiometricCredentials() async {
+    await prefs?.remove("biometric_username");
+    await prefs?.remove("biometric_password");
+    await prefs?.setBool("biometric_enabled", false);
+  }
+
+  /// Kiểm tra xem có credentials đã lưu không
+  bool get hasBiometricCredentials {
+    final username = prefs?.getString("biometric_username");
+    final password = prefs?.getString("biometric_password");
+    final enabled = prefs?.getBool("biometric_enabled") ?? false;
+    return enabled && username != null && password != null && username.isNotEmpty && password.isNotEmpty;
+  }
+
+  /// Lấy credentials đã lưu (đã giải mã)
+  Future<Map<String, String>?> getBiometricCredentials() async {
+    try {
+      final encryptedUsername = prefs?.getString("biometric_username");
+      final encryptedPassword = prefs?.getString("biometric_password");
+      
+      if (encryptedUsername == null || encryptedPassword == null) {
+        return null;
+      }
+
+      final username = AlgorisUtils.decrypt(encryptedUsername);
+      final password = AlgorisUtils.decrypt(encryptedPassword);
+      
+      return {
+        'username': username,
+        'password': password,
+      };
+    } catch (e) {
+      log("getBiometricCredentials error: $e");
+      return null;
+    }
+  }
+
+  /// Đăng nhập bằng biometric
+  Future<void> loginWithBiometric(BuildContext context) async {
+    try {
+      final biometricService = BiometricAuthService();
+      
+      // Kiểm tra xem thiết bị có hỗ trợ không
+      final isAvailable = await biometricService.isAvailable();
+      if (!isAvailable) {
+        AppUtils.instance.showToast(AppLocale.biometricNotAvailable.translate(context));
+        return;
+      }
+
+      // Kiểm tra xem có credentials đã lưu không
+      if (!hasBiometricCredentials) {
+        AppUtils.instance.showToast(AppLocale.biometricNotEnrolled.translate(context));
+        return;
+      }
+
+      // Xác thực bằng biometric (truyền context để hỗ trợ mock mode trên emulator)
+      final didAuthenticate = await biometricService.authenticate(
+        reason: AppLocale.biometricAuthReason.translate(context),
+        context: context,
+      );
+
+      if (!didAuthenticate) {
+        AppUtils.instance.showToast(AppLocale.biometricAuthFailed.translate(context));
+        return;
+      }
+
+      // Lấy credentials đã lưu
+      final credentials = await getBiometricCredentials();
+      if (credentials == null) {
+        AppUtils.instance.showToast(AppLocale.biometricAuthFailed.translate(context));
+        return;
+      }
+
+      // Đăng nhập với credentials đã lưu
+      await login(
+        username: credentials['username'] ?? '',
+        password: credentials['password'] ?? '',
+        context: context,
+      );
+
+      AppUtils.instance.showToast(AppLocale.biometricAuthSuccess.translate(context));
+    } catch (e, t) {
+      log("loginWithBiometric()", error: e, stackTrace: t);
+      AppUtils.instance.showToast(AppLocale.biometricAuthFailed.translate(context));
+    }
+  }
+
+  /// Kiểm tra và tự động đăng nhập bằng biometric khi mở app
+  Future<void> checkAndAutoLoginWithBiometric(BuildContext context) async {
+    try {
+      if (!hasBiometricCredentials) {
+        return;
+      }
+
+      final biometricService = BiometricAuthService();
+      final isAvailable = await biometricService.isAvailable();
+      if (!isAvailable) {
+        return;
+      }
+
+      // Tự động đăng nhập bằng biometric
+      await loginWithBiometric(context);
+    } catch (e, t) {
+      log("checkAndAutoLoginWithBiometric()", error: e, stackTrace: t);
+    }
   }
 
   @override
@@ -118,6 +239,11 @@ class LoginController extends BaseModelStateful {
       // Lưu username
       setUserName();
       
+      // Lưu credentials để dùng cho biometric login
+      if (username.trim().isNotEmpty && password.trim().isNotEmpty) {
+        await saveBiometricCredentials(username, password);
+      }
+      
       // Chuyển vào màn hình chính
       await Future.delayed(const Duration(milliseconds: 500)); // Delay nhỏ để UX mượt hơn
       autoGotoHomePage(context);
@@ -144,54 +270,5 @@ class LoginController extends BaseModelStateful {
       AppUtils.instance.showError("$e");
     }
     AppUtils.instance.hideLoading();
-  }
-
-  // Quét QR code từ căn cước công dân để đăng nhập
-  // Sử dụng giao diện quét QR cũ (ScanQrCodeScreen) với overlay đẹp
-  // Parse và map vào model Citizen, validate và prefill username
-  Future<bool> scanQRCodeForLogin(BuildContext context) async {
-    try {
-      var rs = await Get.to(
-        () => ScanQrCodeScreen(
-          title: AppLocale.scanQRCCCD.translate(context),
-          onScan: (code) async {
-            try {
-              // Parse QR code thành Citizen model
-              final citizen = Citizen.fromQRCode(code);
-
-              // Validate CCCD
-              if (!citizen.isValidIdCard()) {
-                AppUtils.instance.showMessage(
-                  "Số CCCD/Căn cước không hợp lệ (phải là 9 hoặc 12 ký tự số)",
-                  context: Get.context,
-                );
-                return false;
-              }
-
-              // Prefill username với số CCCD
-              usernameController.text = citizen.idCard;
-
-              AppUtils.instance.showToast(AppLocale.qrCodeReadSuccess.translate(context));
-              return true;
-            } catch (e) {
-              log("parseQRCode()", error: e);
-              AppUtils.instance.showToast(AppLocale.qrCodeReadError.translate(context));
-              return false;
-            }
-          },
-        ),
-      );
-      if (rs == "ok") {
-        return true;
-      }
-      if (rs == "cancel") {
-        return false;
-      }
-      return false;
-    } catch (e, t) {
-      log("scanQRCodeForLogin()", error: e, stackTrace: t);
-      AppUtils.instance.showToast(AppLocale.qrScanError.translate(context));
-      return false;
-    }
   }
 }

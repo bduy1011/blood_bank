@@ -59,7 +59,7 @@ class _ForgotPasswordPageState
                 )),
             centerTitle: true,
             title: Text(
-              "Quên mật khẩu",
+              AppLocale.forgotPassword.translate(context),
               style: context.myTheme.textThemeT1.title
                   .copyWith(color: Colors.white),
             ),
@@ -164,7 +164,7 @@ class _ForgotPasswordPageState
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(
-                        errorText: "Vui lòng nhập CCCD/Căn cước"),
+                        errorText: AppLocale.formRequiredUsernameError.translate(context)),
                   ]),
                 ),
                 const SizedBox(

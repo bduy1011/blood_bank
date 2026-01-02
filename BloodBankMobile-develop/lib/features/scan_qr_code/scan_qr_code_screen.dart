@@ -1,6 +1,11 @@
+import 'dart:developer';
+
+import 'package:blood_donation/core/localization/app_locale.dart';
 import 'package:blood_donation/utils/extension/context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:mobile_scanner/mobile_scanner.dart' as mobile_scanner;
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 import '../../base/base_view/base_view.dart';
@@ -37,6 +42,9 @@ class _ScanQrCodeScreenState
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   Barcode? result;
   QRViewController? qrController;
+  final mobile_scanner.MobileScannerController _mobileScannerController =
+      mobile_scanner.MobileScannerController();
+  bool _isDisposed = false;
 
   @override
   QRController dependencyController() {
@@ -48,9 +56,12 @@ class _ScanQrCodeScreenState
   @override
   void reassemble() {
     super.reassemble();
-    if (qrController != null) {
+    if (_isDisposed || qrController == null) return;
+    try {
       qrController!.pauseCamera();
       qrController!.resumeCamera();
+    } catch (e) {
+      log("reassemble()", error: e);
     }
   }
 
@@ -84,6 +95,16 @@ class _ScanQrCodeScreenState
                 Icons.arrow_back_rounded,
                 color: Colors.white,
               )),
+          actions: [
+            IconButton(
+              onPressed: _pickImageFromGallery,
+              icon: const Icon(
+                Icons.photo_library,
+                color: Colors.white,
+              ),
+              tooltip: AppLocale.selectImageFromGallery.translate(context),
+            ),
+          ],
           centerTitle: true,
           backgroundColor: Colors.transparent,
         ),
@@ -119,14 +140,22 @@ class _ScanQrCodeScreenState
   }
 
   void _onQRViewCreated(QRViewController controller) {
+    if (_isDisposed) {
+      controller.dispose();
+      return;
+    }
     qrController = controller;
     controller.scannedDataStream.listen((scanData) {
-      debugPrint("scanData ${scanData.code}");
-      if (hasData(scanData.code) == null) {
-        //
-        qrController?.pauseCamera();
-        onScanQRcode(scanData.code ?? "");
-      }
+      if (_isDisposed) return;
+      // Xử lý trên microtask để không block main thread
+      Future.microtask(() {
+        if (_isDisposed) return;
+        debugPrint("scanData ${scanData.code}");
+        if (hasData(scanData.code) == null) {
+          qrController?.pauseCamera();
+          onScanQRcode(scanData.code ?? "");
+        }
+      });
     });
   }
 
@@ -138,17 +167,118 @@ class _ScanQrCodeScreenState
   }
 
   Future<void> onScanQRcode(String data) async {
-    var rs = await widget.onScan.call(data);
-    if (rs == true) {
-      Get.back(result: "ok");
-    } else {
+    try {
+      var rs = await widget.onScan.call(data);
+      // Đóng trang sau khi xử lý xong, bất kể kết quả
+      if (rs == true) {
+        Get.back(result: "ok");
+      } else {
+        Get.back(result: "cancel");
+      }
+    } catch (e) {
+      log("onScanQRcode()", error: e);
+      // Đóng trang ngay cả khi có lỗi
       Get.back(result: "cancel");
+    }
+  }
+
+  /// Chọn ảnh từ thư viện và đọc QR code
+  Future<void> _pickImageFromGallery() async {
+    try {
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 100,
+      );
+
+      if (image == null) {
+        // User đã hủy chọn ảnh
+        return;
+      }
+
+      // Hiển thị loading
+      Get.dialog(
+        const Center(child: CircularProgressIndicator()),
+        barrierDismissible: false,
+      );
+
+      final scanResult = await Future.microtask(() async {
+        return await _mobileScannerController.analyzeImage(image.path);
+      });
+
+      // Đóng loading dialog
+      if (Get.isDialogOpen == true) {
+        Get.back();
+      }
+
+      if (scanResult == null || scanResult.barcodes.isEmpty) {
+        Get.snackbar(
+          AppLocale.error.translate(context),
+          AppLocale.noQRCodeFoundInImage.translate(context),
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.orange,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 3),
+        );
+        return;
+      }
+
+      // Lấy QR code đầu tiên tìm được
+      final barcode = scanResult.barcodes.first;
+      if (barcode.rawValue != null && barcode.rawValue!.isNotEmpty) {
+        // Xử lý QR code giống như scan từ camera
+        if (hasData(barcode.rawValue) == null) {
+          qrController?.pauseCamera();
+          // Gọi onScanQRcode sẽ tự động đóng trang khi thành công
+          await onScanQRcode(barcode.rawValue!);
+        } else {
+          // QR code không hợp lệ, hiển thị thông báo nhưng không đóng trang
+          Get.snackbar(
+            AppLocale.error.translate(context),
+            'Please enter card id',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.orange,
+            colorText: Colors.white,
+            duration: const Duration(seconds: 3),
+          );
+        }
+      } else {
+        Get.snackbar(
+          AppLocale.error.translate(context),
+          AppLocale.failedToReadQRFromImage.translate(context),
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 3),
+        );
+      }
+    } catch (e) {
+      log("_pickImageFromGallery()", error: e);
+      // Đóng loading dialog nếu còn mở
+      if (Get.isDialogOpen == true) {
+        Get.back();
+      }
+      Get.snackbar(
+        AppLocale.error.translate(context),
+        "${AppLocale.failedToReadQRFromImage.translate(context)}: $e",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 3),
+      );
     }
   }
 
   @override
   void dispose() {
-    qrController?.dispose();
+    _isDisposed = true;
+    // Pause camera trước khi dispose
+    qrController?.pauseCamera();
+    // Đợi một chút để camera được pause hoàn toàn
+    Future.delayed(const Duration(milliseconds: 100), () {
+      qrController?.dispose();
+    });
+    _mobileScannerController.dispose();
     super.dispose();
   }
 }

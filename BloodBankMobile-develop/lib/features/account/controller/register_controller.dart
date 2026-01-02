@@ -163,7 +163,7 @@ class RegisterController extends BaseModelStateful {
   }
 
   // Quét QR code từ căn cước công dân để đăng ký
-  // Sử dụng giao diện quét QR cũ (ScanQrCodeScreen) với overlay đẹp
+  // Sử dụng giao diện quét QR với chức năng chọn ảnh từ thư viện
   // Parse và map vào model Citizen, validate và prefill form
   Future<bool> scanQRCodeForRegistration(BuildContext context) async {
     try {
@@ -190,39 +190,11 @@ class RegisterController extends BaseModelStateful {
               usernameRegisterController.text = citizen.idCard;
               fullNameRegisterController.text = citizen.fullName;
 
-              // Hiển thị thông tin đã lấy được
-              final buffer = StringBuffer();
-              buffer.writeln("Đã lấy thông tin từ QR code:");
-              buffer.writeln("");
-              buffer.writeln("• Số CCCD: ${citizen.idCard}");
-              buffer.writeln("• Họ tên: ${citizen.fullName}");
-              
-              if (citizen.dateOfBirth != null && citizen.isValidDateOfBirth()) {
-                buffer.writeln("• Ngày sinh: ${citizen.getFormattedDateOfBirth()}");
-              }
-              
-              if (citizen.gender != null && citizen.gender!.isNotEmpty) {
-                buffer.writeln("• Giới tính: ${citizen.gender}");
-              }
-              
-              if (citizen.address != null && citizen.address!.isNotEmpty) {
-                buffer.writeln("• Địa chỉ: ${citizen.address}");
-              }
-              
-              if (citizen.issueDate != null && citizen.issueDate!.isNotEmpty) {
-                buffer.writeln("• Ngày cấp: ${citizen.getFormattedIssueDate()}");
-              }
-              
-              buffer.writeln("");
-              buffer.writeln("Bạn có thể chỉnh sửa thông tin trên form nếu cần.");
-
-              AppUtils.instance.showMessage(
-                buffer.toString(),
-                context: Get.context,
-                isAlignmentLeft: true,
-              );
-
+              // Hiển thị toast thành công trước
               AppUtils.instance.showToast(AppLocale.qrCodeReadSuccess.translate(context));
+              
+              // Trả về true để đóng trang scan QR trước
+              // Sau đó mới hiển thị dialog thông tin
               return true;
             } catch (e) {
               log("parseQRCode()", error: e);
@@ -233,6 +205,7 @@ class RegisterController extends BaseModelStateful {
         ),
       );
       if (rs == "ok") {
+        // Đã quay lại từ scan QR thành công
         return true;
       }
       if (rs == "cancel") {

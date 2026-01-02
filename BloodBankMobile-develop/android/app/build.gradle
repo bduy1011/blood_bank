@@ -32,8 +32,8 @@ if (flutterVersionName == null) {
 
 android {
     namespace = "com.blood.choray"
-    compileSdk = 34
-    ndkVersion = "25.1.8937393"//flutter.ndkVersion
+    compileSdk = 36
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         coreLibraryDesugaringEnabled true // Enable desugaring

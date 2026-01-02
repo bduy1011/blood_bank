@@ -92,7 +92,7 @@ class _RegisterPageState
                             textInputAction: TextInputAction.next,
                             decoration: InputDecoration(
                                 focusedBorder: const UnderlineInputBorder(),
-                                labelText: "Họ và tên",
+                                labelText: AppLocale.fullname.translate(context),
                                 floatingLabelStyle: context
                                     .myTheme.textThemeT1.title
                                     .copyWith(fontWeight: FontWeight.normal),
@@ -122,7 +122,7 @@ class _RegisterPageState
                             textInputAction: TextInputAction.next,
                             decoration: InputDecoration(
                                 focusedBorder: const UnderlineInputBorder(),
-                                labelText: "Tên đăng nhập (CCCD/Căn cước)",
+                                labelText: AppLocale.username.translate(context),
                                 floatingLabelStyle: context
                                     .myTheme.textThemeT1.title
                                     .copyWith(fontWeight: FontWeight.normal),

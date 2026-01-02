@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:blood_donation/app/app_util/enum.dart';
 import 'package:blood_donation/base/base_view/base_view.dart';
 import 'package:blood_donation/core/localization/app_locale.dart';
@@ -179,7 +181,7 @@ class ProfileController extends BaseModelStateful {
   Future<bool> scanQRCode() async {
     var rs = await Get.to(
       () => ScanQrCodeScreen(
-        title: AppLocale.scanQRCCCD.translate(context),
+        title: AppLocale.scanQRCCCD.translate(Get.context!),
         onScan: (code) async {
           //
           var ls = code.split("|");

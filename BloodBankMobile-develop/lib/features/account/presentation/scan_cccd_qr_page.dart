@@ -4,6 +4,7 @@ import 'package:blood_donation/models/citizen.dart';
 import 'package:blood_donation/utils/extension/context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class ScanCCCDQRPage extends StatefulWidget {
@@ -94,6 +95,75 @@ class _ScanCCCDQRPageState extends State<ScanCCCDQRPage> {
     }
   }
 
+  /// Chọn ảnh từ thư viện và đọc QR code
+  Future<void> _pickImageFromGallery() async {
+    try {
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 100,
+      );
+
+      if (image == null) {
+        // User đã hủy chọn ảnh
+        return;
+      }
+
+      // Hiển thị loading
+      Get.dialog(
+        const Center(child: CircularProgressIndicator()),
+        barrierDismissible: false,
+      );
+
+      // Đọc QR code từ ảnh bằng mobile_scanner
+      final result = await _controller?.analyzeImage(image.path);
+
+      // Đóng loading dialog
+      Get.back();
+
+      if (result == null || result.barcodes.isEmpty) {
+        Get.snackbar(
+          AppLocale.error.translate(context),
+          AppLocale.noQRCodeFoundInImage.translate(context),
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.orange,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 3),
+        );
+        return;
+      }
+
+      // Lấy QR code đầu tiên tìm được
+      final barcode = result.barcodes.first;
+      if (barcode.rawValue != null && barcode.rawValue!.isNotEmpty) {
+        _handleQRCode(barcode.rawValue);
+      } else {
+        Get.snackbar(
+          AppLocale.error.translate(context),
+          AppLocale.failedToReadQRFromImage.translate(context),
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 3),
+        );
+      }
+    } catch (e) {
+      log("_pickImageFromGallery()", error: e);
+      // Đóng loading dialog nếu còn mở
+      if (Get.isDialogOpen == true) {
+        Get.back();
+      }
+      Get.snackbar(
+        AppLocale.error.translate(context),
+        "${AppLocale.failedToReadQRFromImage.translate(context)}: $e",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 3),
+      );
+    }
+  }
+
   @override
   void dispose() {
     _controller?.dispose();
@@ -131,6 +201,16 @@ class _ScanCCCDQRPageState extends State<ScanCCCDQRPage> {
               color: Colors.white,
             ),
           ),
+          actions: [
+            IconButton(
+              onPressed: _pickImageFromGallery,
+              icon: const Icon(
+                Icons.photo_library,
+                color: Colors.white,
+              ),
+              tooltip: AppLocale.selectImageFromGallery.translate(context),
+            ),
+          ],
           centerTitle: true,
           backgroundColor: Colors.transparent,
           elevation: 0,

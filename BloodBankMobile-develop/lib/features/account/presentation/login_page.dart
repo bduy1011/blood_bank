@@ -5,6 +5,7 @@ import 'package:blood_donation/core/localization/app_locale.dart';
 import 'package:blood_donation/features/question_answer/presentation/question_answer_page.dart';
 import 'package:blood_donation/utils/extension/context_ext.dart';
 import 'package:blood_donation/utils/widget/spacer_widget.dart';
+import 'package:blood_donation/utils/biometric_auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
@@ -29,6 +30,29 @@ class _LoginPageState extends BaseViewStateful<LoginPage, LoginController> {
   }
 
   bool _showPassword = false;
+  bool _biometricAvailable = false;
+  bool _hasBiometricCredentials = false;
+  final BiometricAuthService _biometricAuthService = BiometricAuthService();
+
+  @override
+  void initState() {
+    super.initState();
+    _checkBiometricAvailability();
+    // Tự động đăng nhập bằng biometric nếu có credentials
+    if (controller.hasBiometricCredentials) {
+      Future.delayed(const Duration(milliseconds: 500), () {
+        controller.checkAndAutoLoginWithBiometric(context);
+      });
+    }
+  }
+
+  Future<void> _checkBiometricAvailability() async {
+    final isAvailable = await _biometricAuthService.isAvailable();
+    setState(() {
+      _biometricAvailable = isAvailable;
+      _hasBiometricCredentials = controller.hasBiometricCredentials;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +91,11 @@ class _LoginPageState extends BaseViewStateful<LoginPage, LoginController> {
                             spacing: 40,
                           ),
                           buildButtonLogin(context),
+                          if (_biometricAvailable &&
+                              _hasBiometricCredentials) ...[
+                            const SizedBox(height: 20),
+                            buildBiometricLoginButton(context),
+                          ],
                         ],
                       ),
                       const SizedBox(
@@ -231,6 +260,29 @@ class _LoginPageState extends BaseViewStateful<LoginPage, LoginController> {
     );
   }
 
+  Widget buildBiometricLoginButton(BuildContext context) {
+    return OutlinedButton.icon(
+      onPressed: () {
+        controller.loginWithBiometric(context);
+      },
+      icon: const Icon(Icons.fingerprint, size: 24),
+      label: Text(
+        AppLocale.loginWithBiometric.translate(context),
+        style: context.myTheme.textThemeT1.title,
+      ),
+      style: OutlinedButton.styleFrom(
+        side: const BorderSide(color: Color.fromARGB(255, 229, 59, 59)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(50),
+        ),
+        padding: const EdgeInsets.symmetric(
+          vertical: 15,
+          horizontal: 40,
+        ),
+      ),
+    );
+  }
+
   TextFormField buildPassword(BuildContext context) {
     return TextFormField(
       controller: controller.passwordController,
@@ -273,11 +325,8 @@ class _LoginPageState extends BaseViewStateful<LoginPage, LoginController> {
     );
   }
 
-  Widget buildUserName(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: TextFormField(
+  TextFormField buildUserName(BuildContext context) {
+    return TextFormField(
       controller: controller.usernameController,
       decoration: InputDecoration(
         focusedBorder: const UnderlineInputBorder(),
@@ -298,32 +347,6 @@ class _LoginPageState extends BaseViewStateful<LoginPage, LoginController> {
                   AppLocale.formRequiredUsernameError.translate(context)),
         ],
       ),
-          ),
-        ),
-        const SizedBox(width: 8),
-        // Nút quét QR nhỏ
-        Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () {
-              controller.scanQRCodeForLogin(context);
-            },
-            borderRadius: BorderRadius.circular(8),
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 229, 59, 59).withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Icon(
-                Icons.qr_code_scanner,
-                size: 24,
-                color: Color.fromARGB(255, 229, 59, 59),
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 
