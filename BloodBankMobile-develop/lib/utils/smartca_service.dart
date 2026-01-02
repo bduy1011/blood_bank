@@ -12,17 +12,33 @@ import 'package:url_launcher/url_launcher.dart';
 /// 2. Deeplink - Mở app SmartCA để ký số
 /// 3. Web API - Kết nối qua HTTP/HTTPS
 class SmartCAService {
+  // ============================================
+  // MOCK MODE - Để test khi chưa có backend
+  // ============================================
+  /// Set true để sử dụng mock data thay vì gọi API thật
+  /// Set false khi backend đã sẵn sàng
+  static const bool useMockMode = true;
+  
+  // ============================================
+  // SMARTCA CONFIGURATION
+  // ============================================
   static const String _smartcaPackageName = 'com.vnpt.smartca';
   static const String _smartcaDeepLinkScheme = 'smartca://';
   
-  // TODO: Cấu hình thông tin tích hợp từ SmartCA
-  // Lấy từ: https://doitac-smartca.vnpt.vn/tich-hop-ky-so
+  // ============================================
+  // LƯU Ý: Client ID và Secret KHÔNG đặt ở đây!
+  // ============================================
+  // Client ID và Client Secret phải được cấu hình trên BACKEND
+  // Flutter chỉ gọi API của backend, không gọi trực tiếp SmartCA
+  // Xem chi tiết: SMARTCa_ARCHITECTURE.md
+  //
+  // Các biến dưới đây chỉ để tham khảo, không được sử dụng trong code
   // ignore: unused_field
-  static const String _clientId = 'YOUR_CLIENT_ID';
+  static const String _clientId = 'YOUR_CLIENT_ID'; // ❌ KHÔNG dùng
   // ignore: unused_field
-  static const String _clientSecret = 'YOUR_CLIENT_SECRET';
+  static const String _clientSecret = 'YOUR_CLIENT_SECRET'; // ❌ KHÔNG dùng
   // ignore: unused_field
-  static const String _apiBaseUrl = 'https://api.smartca.vnpt.vn'; // UAT hoặc Production
+  static const String _apiBaseUrl = 'https://api.smartca.vnpt.vn'; // Chỉ để tham khảo
 
   /// Phương thức 1: Ký số bằng Deeplink (Mở app SmartCA)
   /// 
@@ -112,6 +128,20 @@ class SmartCAService {
     required String dataToSign,
     required String signatureType,
   }) async {
+    // ============================================
+    // MOCK MODE - Test khi chưa có backend
+    // ============================================
+    if (useMockMode) {
+      return _mockSignWithWebAPI(
+        registrationId: registrationId,
+        dataToSign: dataToSign,
+        signatureType: signatureType,
+      );
+    }
+
+    // ============================================
+    // PRODUCTION MODE - Gọi API thật
+    // ============================================
     try {
       final appCenter = GetIt.instance<AppCenter>();
       final response = await appCenter.backendProvider.signWithSmartCA(
@@ -159,6 +189,88 @@ class SmartCAService {
         'Lỗi khi ký số: ${e.toString()}',
       );
       return null;
+    }
+  }
+
+  /// Mock function để test khi chưa có backend
+  static Future<Map<String, dynamic>?> _mockSignWithWebAPI({
+    required String registrationId,
+    required String dataToSign,
+    required String signatureType,
+  }) async {
+    try {
+      // Simulate network delay
+      await Future.delayed(const Duration(seconds: 1));
+
+      // Tạo mock signature (một hình ảnh PNG đơn giản)
+      // Trong thực tế, đây sẽ là chữ ký số từ SmartCA
+      final mockSignatureBytes = _createMockSignatureImage();
+
+      // Encode thành base64
+      final signatureBase64 = base64Encode(mockSignatureBytes);
+
+      // Mock response
+      final mockResponse = {
+        'signature': mockSignatureBytes,
+        'signatureBase64': signatureBase64,
+        'success': true,
+        'message': 'Ký số thành công (Mock Mode)',
+        'certificateId': 'MOCK_CERT_${signatureType}_${DateTime.now().millisecondsSinceEpoch}',
+        'certificateInfo': {
+          'owner': _getMockCertificateOwner(signatureType),
+          'issuedBy': 'SmartCA Mock',
+          'validFrom': DateTime.now().toIso8601String(),
+          'validTo': DateTime.now().add(const Duration(days: 365)).toIso8601String(),
+        },
+        'signedAt': DateTime.now().toIso8601String(),
+      };
+
+      // Simulate upload success
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      AppUtils.instance.showToast(
+        'Ký số thành công (Mock Mode - Chưa có backend)',
+      );
+
+      return mockResponse;
+    } catch (e) {
+      AppUtils.instance.showToast(
+        'Lỗi khi ký số (Mock): ${e.toString()}',
+      );
+      return null;
+    }
+  }
+
+  /// Tạo mock signature image (PNG đơn giản)
+  static Uint8List _createMockSignatureImage() {
+    // Tạo một PNG đơn giản (1x1 pixel màu đen)
+    // Trong thực tế, đây sẽ là chữ ký số từ SmartCA
+    // Format: PNG với kích thước nhỏ để test
+    const pngHeader = [
+      0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, // PNG signature
+    ];
+    
+    // Tạo một image đơn giản (có thể thay bằng image thật nếu cần)
+    // Để đơn giản, tạo một byte array giả lập
+    final mockImage = List<int>.from(pngHeader);
+    mockImage.addAll(List.filled(100, 0)); // Padding
+    
+    return Uint8List.fromList(mockImage);
+  }
+
+  /// Lấy tên chứng chỉ mock dựa trên loại chữ ký
+  static String _getMockCertificateOwner(String signatureType) {
+    switch (signatureType) {
+      case 'donor':
+        return 'Người hiến máu (Mock)';
+      case 'staff':
+        return 'Nhân viên (Mock)';
+      case 'doctor':
+        return 'Bác sĩ (Mock)';
+      case 'nurse':
+        return 'Điều dưỡng (Mock)';
+      default:
+        return 'Unknown (Mock)';
     }
   }
 
