@@ -1,5 +1,8 @@
-import 'dart:convert';
-import 'dart:typed_data';
+// Ví dụ: Cách sử dụng SmartCA thay vì chữ ký tay
+// 
+// Để sử dụng SmartCA, thay thế code trong register_donate_blood_reception_page.dart
+// bằng code tương tự như file này
+
 import 'package:blood_donation/core/localization/app_locale.dart';
 import 'package:blood_donation/utils/extension/context_ext.dart';
 import 'package:blood_donation/utils/app_utils.dart';
@@ -10,8 +13,8 @@ import 'package:get/get.dart';
 import '../../../app/theme/colors.dart';
 import '../controller/register_donate_blood_controller.dart';
 
-class RegisterDonateBloodPreTestPage extends StatelessWidget {
-  const RegisterDonateBloodPreTestPage({
+class RegisterDonateBloodReceptionPageSmartCA extends StatefulWidget {
+  const RegisterDonateBloodReceptionPageSmartCA({
     super.key,
     required this.state,
   });
@@ -19,98 +22,12 @@ class RegisterDonateBloodPreTestPage extends StatelessWidget {
   final RegisterDonateBloodController state;
 
   @override
-  Widget build(BuildContext context) {
-    return _SignaturePageWidget(
-      title: AppLocale.preDonationTestTitle.translate(context),
-      description: AppLocale.pleaseSignAsStaff.translate(context),
-      signatureType: 'staff',
-      state: state,
-      onSignatureSaved: (signatureBytes) {
-        state.staffSignatureBytes = signatureBytes;
-        AppUtils.instance.showToast(
-          AppLocale.signatureSavedSuccess.translate(context),
-        );
-        state.updateNextPage(7);
-      },
-    );
-  }
+  State<RegisterDonateBloodReceptionPageSmartCA> createState() =>
+      _RegisterDonateBloodReceptionPageSmartCAState();
 }
 
-class RegisterDonateBloodDoctorPage extends StatelessWidget {
-  const RegisterDonateBloodDoctorPage({
-    super.key,
-    required this.state,
-  });
-
-  final RegisterDonateBloodController state;
-
-  @override
-  Widget build(BuildContext context) {
-    return _SignaturePageWidget(
-      title: AppLocale.doctorConfirmationTitle.translate(context),
-      description: AppLocale.pleaseSignAsDoctor.translate(context),
-      signatureType: 'doctor',
-      state: state,
-      onSignatureSaved: (signatureBytes) {
-        state.doctorSignatureBytes = signatureBytes;
-        AppUtils.instance.showToast(
-          AppLocale.signatureSavedSuccess.translate(context),
-        );
-        state.updateNextPage(8);
-      },
-    );
-  }
-}
-
-class RegisterDonateBloodNursePage extends StatelessWidget {
-  const RegisterDonateBloodNursePage({
-    super.key,
-    required this.state,
-  });
-
-  final RegisterDonateBloodController state;
-
-  @override
-  Widget build(BuildContext context) {
-    return _SignaturePageWidget(
-      title: AppLocale.nurseBloodDrawTitle.translate(context),
-      description: AppLocale.pleaseSignAsNurse.translate(context),
-      signatureType: 'nurse',
-      state: state,
-      onSignatureSaved: (signatureBytes) async {
-        state.nurseSignatureBytes = signatureBytes;
-        AppUtils.instance.showToast(
-          AppLocale.signatureSavedSuccess.translate(context),
-        );
-        await state.completeBloodDonation();
-      },
-      buttonText: AppLocale.completeBloodDonation.translate(context),
-    );
-  }
-}
-
-class _SignaturePageWidget extends StatefulWidget {
-  const _SignaturePageWidget({
-    required this.title,
-    required this.description,
-    required this.signatureType,
-    required this.state,
-    required this.onSignatureSaved,
-    this.buttonText,
-  });
-
-  final String title;
-  final String description;
-  final String signatureType;
-  final RegisterDonateBloodController state;
-  final Function(Uint8List) onSignatureSaved;
-  final String? buttonText;
-
-  @override
-  State<_SignaturePageWidget> createState() => _SignaturePageWidgetState();
-}
-
-class _SignaturePageWidgetState extends State<_SignaturePageWidget> {
+class _RegisterDonateBloodReceptionPageSmartCAState
+    extends State<RegisterDonateBloodReceptionPageSmartCA> {
   bool _isSigning = false;
 
   @override
@@ -129,7 +46,7 @@ class _SignaturePageWidgetState extends State<_SignaturePageWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              widget.title,
+              AppLocale.receptionStepTitle.translate(context),
               style: context.myTheme.textThemeT1.title.copyWith(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -137,7 +54,7 @@ class _SignaturePageWidgetState extends State<_SignaturePageWidget> {
             ),
             const SizedBox(height: 8),
             Text(
-              widget.description,
+              AppLocale.receptionStepDescription.translate(context),
               style: context.myTheme.textThemeT1.body.copyWith(
                 fontSize: 14,
                 color: Colors.grey[700],
@@ -157,7 +74,7 @@ class _SignaturePageWidgetState extends State<_SignaturePageWidget> {
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.verified_user, color: Colors.blue[700]),
+                      Icon(Icons.info_outline, color: Colors.blue[700]),
                       const SizedBox(width: 8),
                       Text(
                         'Chữ ký số SmartCA',
@@ -171,8 +88,7 @@ class _SignaturePageWidgetState extends State<_SignaturePageWidget> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Vui lòng sử dụng chữ ký số SmartCA để xác nhận. '
-                    'Chữ ký số sẽ được thực hiện qua hệ thống SmartCA.',
+                    'Vui lòng sử dụng ứng dụng SmartCA để thực hiện chữ ký số.',
                     style: context.myTheme.textThemeT1.body.copyWith(
                       fontSize: 14,
                       color: Colors.blue[900],
@@ -182,7 +98,7 @@ class _SignaturePageWidgetState extends State<_SignaturePageWidget> {
               ),
             ),
             const SizedBox(height: 24),
-            // Nút ký số
+            // Nút ký số bằng SmartCA
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -213,13 +129,29 @@ class _SignaturePageWidgetState extends State<_SignaturePageWidget> {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            widget.buttonText ?? 'Ký số bằng SmartCA',
+                            'Ký số bằng SmartCA',
                             style: context.myTheme.textThemeT1.title.copyWith(
                               color: Colors.white,
                             ),
                           ),
                         ],
                       ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Nút tải app SmartCA (nếu chưa cài)
+            Center(
+              child: TextButton(
+                onPressed: () {
+                  SmartCAService.openSmartCADownload();
+                },
+                child: Text(
+                  'Tải ứng dụng SmartCA',
+                  style: context.myTheme.textThemeT1.body.copyWith(
+                    color: AppColor.mainColor,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
               ),
             ),
           ],
@@ -234,38 +166,66 @@ class _SignaturePageWidgetState extends State<_SignaturePageWidget> {
     });
 
     try {
-      // Kiểm tra registration ID
-      if (widget.state.registerDonationBlood.id == null ||
-          widget.state.registerDonationBlood.id == 0) {
-        AppUtils.instance.showToast(
-          'Vui lòng đăng ký trước khi ký số.',
-        );
-        return;
-      }
-
       // Chuẩn bị dữ liệu cần ký
       final dataToSign = SmartCAService.prepareDataForSigning(
-        originalData: jsonEncode(widget.state.registerDonationBlood.toJson()),
+        originalData: widget.state.registerDonationBlood.toJson().toString(),
         metadata: {
-          'signatureType': widget.signatureType,
-          'registrationId': widget.state.registerDonationBlood.id,
-          'step': widget.signatureType,
+          'signatureType': 'donor',
+          'userId': widget.state.registerDonationBlood.nguoiHienMauId,
+          'eventId': widget.state.event?.dotLayMauId,
         },
       );
 
-      // Ký số bằng Web API
-      final result = await SmartCAService.signWithWebAPI(
-        registrationId: widget.state.registerDonationBlood.id.toString(),
+      // Kiểm tra xem app SmartCA đã cài chưa
+      final isInstalled = await SmartCAService.isSmartCAInstalled();
+      if (!isInstalled) {
+        // Hiển thị dialog yêu cầu cài app
+        final shouldInstall = await Get.dialog<bool>(
+          AlertDialog(
+            title: const Text('Cần cài đặt SmartCA'),
+            content: const Text(
+              'Để thực hiện chữ ký số, bạn cần cài đặt ứng dụng SmartCA. '
+              'Bạn có muốn tải ứng dụng ngay bây giờ không?',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Get.back(result: false),
+                child: const Text('Hủy'),
+              ),
+              TextButton(
+                onPressed: () => Get.back(result: true),
+                child: const Text('Tải ngay'),
+              ),
+            ],
+          ),
+        );
+
+        if (shouldInstall == true) {
+          await SmartCAService.openSmartCADownload();
+        }
+        return;
+      }
+
+      // Ký số bằng Deeplink
+      final signatureBytes = await SmartCAService.signWithDeepLink(
         dataToSign: dataToSign,
-        signatureType: widget.signatureType,
+        signatureType: 'donor',
+        reason: 'Ký xác nhận tiếp nhận hiến máu',
+        location: widget.state.event?.diaDiemToChuc ?? '',
       );
 
-      if (result != null && result['success'] == true) {
+      if (signatureBytes != null) {
         // Lưu chữ ký
-        widget.onSignatureSaved(result['signature'] as Uint8List);
-      } else {
+        widget.state.donorSignatureBytes = signatureBytes;
         AppUtils.instance.showToast(
-          result?['message'] ?? 'Ký số thất bại',
+          AppLocale.signatureSavedSuccess.translate(context),
+        );
+        widget.state.updateNextPage(5);
+      } else {
+        // Chữ ký chưa hoàn thành (đang chờ callback từ SmartCA)
+        // TODO: Implement callback handler để nhận kết quả
+        AppUtils.instance.showToast(
+          'Đang xử lý chữ ký số. Vui lòng đợi...',
         );
       }
     } catch (e) {
@@ -281,3 +241,4 @@ class _SignaturePageWidgetState extends State<_SignaturePageWidget> {
     }
   }
 }
+

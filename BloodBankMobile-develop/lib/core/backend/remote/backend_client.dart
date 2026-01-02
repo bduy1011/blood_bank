@@ -215,4 +215,20 @@ abstract class BackendClient {
   Future<GeneralResponseMap<dynamic>> requestForgotPassword(
       @Body() Map<String, dynamic> body,
       {@DioOptions() Options? options});
+
+  // SmartCA Integration Endpoints
+  @POST('api/smartca/sign')
+  Future<GeneralResponseMap<dynamic>> signWithSmartCA(
+      @Body() Map<String, dynamic> body,
+      {@DioOptions() Options? options});
+
+  @GET('api/smartca/certificates')
+  Future<GeneralResponseMap<dynamic>> getCertificates(
+      {@DioOptions() Options? options});
+
+  @POST('api/dang-ky-hien-mau/upload-signature/{registrationId}')
+  Future<GeneralResponseMap<dynamic>> uploadSignature(
+      @Path('registrationId') String registrationId,
+      @Body() Map<String, dynamic> body,
+      {@DioOptions() Options? options});
 }

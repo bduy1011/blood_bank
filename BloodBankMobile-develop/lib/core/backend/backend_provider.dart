@@ -699,4 +699,84 @@ class BackendProvider {
   //     log("updateProfile()", error: e, stackTrace: s);
   //   }
   // }
+
+  // SmartCA Integration Methods
+  /// Ký số bằng SmartCA qua Web API
+  /// 
+  /// [registrationId]: ID đăng ký hiến máu
+  /// [dataToSign]: Dữ liệu cần ký (JSON string)
+  /// [signatureType]: Loại chữ ký (donor, staff, doctor, nurse)
+  /// 
+  /// Returns: Map chứa chữ ký số (base64) và thông tin khác
+  Future<Map<String, dynamic>?> signWithSmartCA({
+    required String registrationId,
+    required String dataToSign,
+    required String signatureType,
+  }) async {
+    try {
+      final response = await _client.signWithSmartCA({
+        'registrationId': registrationId,
+        'dataToSign': dataToSign,
+        'signatureType': signatureType,
+      });
+
+      if (response.status == 200 && response.data != null) {
+        return response.data as Map<String, dynamic>;
+      } else {
+        log("signWithSmartCA() failed: ${response.message}");
+        return null;
+      }
+    } catch (e, s) {
+      log("signWithSmartCA()", error: e, stackTrace: s);
+      return null;
+    }
+  }
+
+  /// Lấy danh sách chứng chỉ số của user hiện tại
+  Future<List<Map<String, dynamic>>> getCertificates() async {
+    try {
+      final response = await _client.getCertificates();
+
+      if (response.status == 200 && response.data != null) {
+        final data = response.data as Map<String, dynamic>;
+        if (data['certificates'] != null) {
+          return List<Map<String, dynamic>>.from(data['certificates']);
+        }
+      }
+      return [];
+    } catch (e, s) {
+      log("getCertificates()", error: e, stackTrace: s);
+      return [];
+    }
+  }
+
+  /// Upload chữ ký số đã ký vào đăng ký hiến máu
+  /// 
+  /// [registrationId]: ID đăng ký hiến máu
+  /// [signatureType]: Loại chữ ký (donor, staff, doctor, nurse)
+  /// [signatureBase64]: Chữ ký số (base64 encoded)
+  /// [signatureInfo]: Thông tin bổ sung về chữ ký
+  Future<bool> uploadSignature({
+    required String registrationId,
+    required String signatureType,
+    required String signatureBase64,
+    Map<String, dynamic>? signatureInfo,
+  }) async {
+    try {
+      final response = await _client.uploadSignature(
+        registrationId,
+        {
+          'signatureType': signatureType,
+          'signature': signatureBase64,
+          'signatureInfo': signatureInfo ?? {},
+          'timestamp': DateTime.now().toIso8601String(),
+        },
+      );
+
+      return response.status == 200;
+    } catch (e, s) {
+      log("uploadSignature()", error: e, stackTrace: s);
+      return false;
+    }
+  }
 }
