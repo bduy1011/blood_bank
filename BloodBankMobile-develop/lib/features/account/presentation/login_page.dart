@@ -38,20 +38,26 @@ class _LoginPageState extends BaseViewStateful<LoginPage, LoginController> {
   void initState() {
     super.initState();
     _checkBiometricAvailability();
-    // Tự động đăng nhập bằng biometric nếu có credentials
-    if (controller.hasBiometricCredentials) {
-      Future.delayed(const Duration(milliseconds: 500), () {
-        controller.checkAndAutoLoginWithBiometric(context);
-      });
-    }
+    // Tự động đăng nhập bằng biometric nếu có tokens đã lưu
+    _checkAndAutoLogin();
   }
 
   Future<void> _checkBiometricAvailability() async {
     final isAvailable = await _biometricAuthService.isAvailable();
+    final hasTokens = await controller.hasStoredTokens();
     setState(() {
       _biometricAvailable = isAvailable;
-      _hasBiometricCredentials = controller.hasBiometricCredentials;
+      _hasBiometricCredentials = hasTokens;
     });
+  }
+
+  Future<void> _checkAndAutoLogin() async {
+    final hasTokens = await controller.hasStoredTokens();
+    if (hasTokens) {
+      Future.delayed(const Duration(milliseconds: 500), () {
+        controller.checkAndAutoLoginWithBiometric(context);
+      });
+    }
   }
 
   @override

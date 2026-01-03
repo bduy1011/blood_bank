@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:blood_donation/app/app_util/enum.dart';
 import 'package:blood_donation/base/base_view/base_view.dart';
 import 'package:blood_donation/core/localization/app_locale.dart';
@@ -70,11 +68,13 @@ class ProfileController extends BaseModelStateful {
 
     ///
     if (!cccd.isNum || !(cccd.length == 12 || cccd.length == 9)) {
-      AppUtils.instance.showToast(AppLocale.invalidIdCard.translate(Get.context!));
+      AppUtils.instance
+          .showToast(AppLocale.invalidIdCard.translate(Get.context!));
       return;
     }
     if (!phoneNumber.isNum || phoneNumber.length != 10) {
-      AppUtils.instance.showToast(AppLocale.invalidPhone.translate(Get.context!));
+      AppUtils.instance
+          .showToast(AppLocale.invalidPhone.translate(Get.context!));
       return;
     }
 
@@ -119,7 +119,8 @@ class ProfileController extends BaseModelStateful {
 
         await backendProvider.saveAuthentication(appCenter.authentication!);
 
-        AppUtils.instance.showToast(AppLocale.updateAccountSuccess.translate(Get.context!));
+        AppUtils.instance
+            .showToast(AppLocale.updateAccountSuccess.translate(Get.context!));
         hideLoading();
         refresh();
         Get.findOrNull<HomeController>()?.onRefresh();
@@ -131,13 +132,14 @@ class ProfileController extends BaseModelStateful {
 
         return;
       }
-      AppUtils.instance
-          .showToast("${AppLocale.updateAccountFailed.translate(Get.context!)}\n${response.message ?? ""}");
+      AppUtils.instance.showToast(
+          "${AppLocale.updateAccountFailed.translate(Get.context!)}\n${response.message ?? ""}");
     } catch (e, t) {
       print(e);
       print(t);
       // TODO
-      AppUtils.instance.showToast(AppLocale.updateAccountFailed.translate(Get.context!));
+      AppUtils.instance
+          .showToast(AppLocale.updateAccountFailed.translate(Get.context!));
     }
     hideLoading();
   }

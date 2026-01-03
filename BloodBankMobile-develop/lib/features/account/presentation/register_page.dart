@@ -250,49 +250,6 @@ class _RegisterPageState
                           const VSpacing(
                             spacing: 30,
                           ),
-                          // Nút chữ ký số
-                          ConstrainedBox(
-                            constraints:
-                                const BoxConstraints(minWidth: double.infinity),
-                            child: OutlinedButton(
-                                onPressed: () {
-                                  controller.mockDigitalSignature(context);
-                                },
-                                style: OutlinedButton.styleFrom(
-                                  side: const BorderSide(
-                                    color: Color.fromARGB(255, 229, 59, 59),
-                                    width: 1.5,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 15,
-                                    horizontal: 40,
-                                  ),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Icon(
-                                      Icons.verified_user,
-                                      color: Color.fromARGB(255, 229, 59, 59),
-                                      size: 20,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      "Chữ ký số",
-                                      style: context.myTheme.textThemeT1.title
-                                          .copyWith(
-                                        color: const Color.fromARGB(255, 229, 59, 59),
-                                      ),
-                                    ),
-                                  ],
-                                )),
-                          ),
-                          const VSpacing(
-                            spacing: 20,
-                          ),
                           ConstrainedBox(
                             constraints:
                                 const BoxConstraints(minWidth: double.infinity),

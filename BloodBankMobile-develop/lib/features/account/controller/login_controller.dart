@@ -1,13 +1,16 @@
 import 'dart:developer';
 
+import 'package:blood_donation/app/app_util/app_center.dart';
 import 'package:blood_donation/base/base_view/base_view.dart';
+import 'package:blood_donation/core/backend/backend_provider.dart';
 import 'package:blood_donation/core/localization/app_locale.dart';
 import 'package:blood_donation/models/authentication.dart';
 import 'package:blood_donation/utils/app_utils.dart';
 import 'package:blood_donation/utils/biometric_auth_service.dart';
-import 'package:blood_donation/utils/agoris_utils.dart';
+import 'package:blood_donation/utils/secure_token_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../app/config/routes.dart';
@@ -53,103 +56,201 @@ class LoginController extends BaseModelStateful {
     prefs?.setString("userName", usernameController.text);
   }
 
-  /// Lưu credentials (mã hóa) để dùng cho biometric login
-  Future<void> saveBiometricCredentials(String username, String password) async {
+  final SecureTokenService _tokenService = SecureTokenService();
+  final BackendProvider _backendProvider = BackendProvider();
+  final AppCenter _appCenter = GetIt.instance<AppCenter>();
+
+  /// Lưu tokens vào secure storage sau khi login thành công
+  /// 
+  /// [authentication]: Authentication object từ server (có accessToken)
+  /// [refreshToken]: Refresh token từ server (optional, có thể null)
+  Future<void> saveTokensToSecureStorage({
+    required Authentication authentication,
+    String? refreshToken,
+  }) async {
     try {
-      final encryptedUsername = AlgorisUtils.encrypt(username);
-      final encryptedPassword = AlgorisUtils.encrypt(password);
-      await prefs?.setString("biometric_username", encryptedUsername);
-      await prefs?.setString("biometric_password", encryptedPassword);
-      await prefs?.setBool("biometric_enabled", true);
-    } catch (e) {
-      log("saveBiometricCredentials error: $e");
-    }
-  }
-
-  /// Xóa credentials đã lưu
-  Future<void> clearBiometricCredentials() async {
-    await prefs?.remove("biometric_username");
-    await prefs?.remove("biometric_password");
-    await prefs?.setBool("biometric_enabled", false);
-  }
-
-  /// Kiểm tra xem có credentials đã lưu không
-  bool get hasBiometricCredentials {
-    final username = prefs?.getString("biometric_username");
-    final password = prefs?.getString("biometric_password");
-    final enabled = prefs?.getBool("biometric_enabled") ?? false;
-    return enabled && username != null && password != null && username.isNotEmpty && password.isNotEmpty;
-  }
-
-  /// Lấy credentials đã lưu (đã giải mã)
-  Future<Map<String, String>?> getBiometricCredentials() async {
-    try {
-      final encryptedUsername = prefs?.getString("biometric_username");
-      final encryptedPassword = prefs?.getString("biometric_password");
-      
-      if (encryptedUsername == null || encryptedPassword == null) {
-        return null;
+      if (authentication.accessToken != null && authentication.accessToken!.isNotEmpty) {
+        await _tokenService.saveTokens(
+          accessToken: authentication.accessToken!,
+          refreshToken: refreshToken,
+        );
+        log("Tokens saved to secure storage successfully");
       }
-
-      final username = AlgorisUtils.decrypt(encryptedUsername);
-      final password = AlgorisUtils.decrypt(encryptedPassword);
-      
-      return {
-        'username': username,
-        'password': password,
-      };
     } catch (e) {
-      log("getBiometricCredentials error: $e");
-      return null;
+      log("saveTokensToSecureStorage error: $e");
     }
   }
 
-  /// Đăng nhập bằng biometric
+  /// Kiểm tra xem có tokens đã lưu trong secure storage không
+  Future<bool> hasStoredTokens() async {
+    return await _tokenService.hasTokens();
+  }
+
+  /// Xóa tokens khỏi secure storage (khi logout)
+  Future<void> clearStoredTokens() async {
+    await _tokenService.clearTokens();
+  }
+
+  /// Đăng nhập bằng biometric (FaceID/Fingerprint)
+  /// 
+  /// Flow:
+  /// 1. Xác thực bằng biometric (local_auth.authenticate())
+  /// 2. Lấy tokens từ secure storage
+  /// 3. Kiểm tra access token có hết hạn không
+  /// 4. Nếu hết hạn → Refresh token
+  /// 5. Set authentication và vào app
   Future<void> loginWithBiometric(BuildContext context) async {
     try {
+      AppUtils.instance.showLoading();
+      
       final biometricService = BiometricAuthService();
       
-      // Kiểm tra xem thiết bị có hỗ trợ không
+      // Bước 1: Kiểm tra xem thiết bị có hỗ trợ không
       final isAvailable = await biometricService.isAvailable();
       if (!isAvailable) {
+        AppUtils.instance.hideLoading();
         AppUtils.instance.showToast(AppLocale.biometricNotAvailable.translate(context));
         return;
       }
 
-      // Kiểm tra xem có credentials đã lưu không
-      if (!hasBiometricCredentials) {
+      // Bước 2: Kiểm tra xem có tokens đã lưu không
+      final hasTokens = await hasStoredTokens();
+      if (!hasTokens) {
+        AppUtils.instance.hideLoading();
         AppUtils.instance.showToast(AppLocale.biometricNotEnrolled.translate(context));
         return;
       }
 
-      // Xác thực bằng biometric (truyền context để hỗ trợ mock mode trên emulator)
+      // Bước 3: Xác thực bằng biometric
       final didAuthenticate = await biometricService.authenticate(
         reason: AppLocale.biometricAuthReason.translate(context),
         context: context,
       );
 
       if (!didAuthenticate) {
+        AppUtils.instance.hideLoading();
         AppUtils.instance.showToast(AppLocale.biometricAuthFailed.translate(context));
         return;
       }
 
-      // Lấy credentials đã lưu
-      final credentials = await getBiometricCredentials();
-      if (credentials == null) {
+      // Bước 4: Lấy tokens từ secure storage
+      final accessToken = await _tokenService.getAccessToken();
+      if (accessToken == null || accessToken.isEmpty) {
+        AppUtils.instance.hideLoading();
         AppUtils.instance.showToast(AppLocale.biometricAuthFailed.translate(context));
         return;
       }
 
-      // Đăng nhập với credentials đã lưu
-      await login(
-        username: credentials['username'] ?? '',
-        password: credentials['password'] ?? '',
-        context: context,
-      );
+      // Bước 5: Kiểm tra token có hết hạn không
+      final isExpired = await _tokenService.isAccessTokenExpired();
+      
+      String? finalAccessToken = accessToken;
+      
+      // Kiểm tra nếu là mock token (test mode)
+      final isMockToken = accessToken.startsWith('mock_token_');
+      
+      if (isExpired && !isMockToken) {
+        // Bước 6: Refresh token nếu hết hạn (chỉ với token thật)
+        try {
+          final newToken = await _backendProvider.refreshToken();
+          if (newToken != null && newToken.isNotEmpty) {
+            finalAccessToken = newToken;
+            // Cập nhật token mới vào secure storage
+            await _tokenService.updateAccessToken(newToken);
+            log("Token refreshed successfully");
+          } else {
+            // Refresh thất bại, cần đăng nhập lại
+            await clearStoredTokens();
+            AppUtils.instance.hideLoading();
+            AppUtils.instance.showToast(
+              'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
+            );
+            return;
+          }
+        } catch (e) {
+          log("refreshToken error: $e");
+          // Refresh thất bại, cần đăng nhập lại
+          await clearStoredTokens();
+          AppUtils.instance.hideLoading();
+          AppUtils.instance.showToast(
+            'Không thể làm mới token. Vui lòng đăng nhập lại.',
+          );
+          return;
+        }
+      }
 
-      AppUtils.instance.showToast(AppLocale.biometricAuthSuccess.translate(context));
+      // Bước 7: Load thông tin user từ server (hoặc mock trong test mode)
+      try {
+        if (isMockToken) {
+          // Test mode: Tạo mock authentication từ token
+          // Parse userCode từ mock token nếu có thể
+          String userCode = "test_user";
+          String name = "Test User";
+          
+          // Thử lấy từ localStorage nếu có
+          final existingAuth = _appCenter.localStorage.authentication;
+          if (existingAuth != null) {
+            userCode = existingAuth.userCode ?? userCode;
+            name = existingAuth.name ?? name;
+          }
+          
+          final mockAuth = Authentication(
+            accessToken: finalAccessToken,
+            userCode: userCode,
+            name: name,
+            appRole: 30,
+            status: 1,
+          );
+          
+          // Lưu authentication
+          await _appCenter.localStorage.saveAuthentication(authentication: mockAuth);
+          _appCenter.setAuthentication(mockAuth);
+          _backendProvider.notifyAuthentication(isAuthenticated: true);
+          
+          AppUtils.instance.hideLoading();
+          AppUtils.instance.showToast(AppLocale.biometricAuthSuccess.translate(context));
+          
+          // Vào app
+          autoGotoHomePage(context);
+        } else {
+          // Production mode: Load từ server
+          // Tạo authentication object từ token
+          final auth = Authentication(
+            accessToken: finalAccessToken,
+          );
+          
+          // Set authentication tạm thời để có thể gọi API
+          _appCenter.setAuthentication(auth);
+          _backendProvider.notifyAuthentication(isAuthenticated: true);
+          
+          // Load thông tin đầy đủ từ server
+          final fullAuth = await _backendProvider.reLoadInformation();
+          if (fullAuth != null) {
+            // Lưu authentication đầy đủ
+            await _appCenter.localStorage.saveAuthentication(authentication: fullAuth);
+            _appCenter.setAuthentication(fullAuth);
+            _backendProvider.notifyAuthentication(isAuthenticated: true);
+            
+            AppUtils.instance.hideLoading();
+            AppUtils.instance.showToast(AppLocale.biometricAuthSuccess.translate(context));
+            
+            // Vào app
+            autoGotoHomePage(context);
+          } else {
+            throw Exception("Failed to load user information");
+          }
+        }
+      } catch (e) {
+        log("reLoadInformation error: $e");
+        AppUtils.instance.hideLoading();
+        AppUtils.instance.showToast(
+          'Không thể tải thông tin người dùng. Vui lòng đăng nhập lại.',
+        );
+        await clearStoredTokens();
+      }
     } catch (e, t) {
       log("loginWithBiometric()", error: e, stackTrace: t);
+      AppUtils.instance.hideLoading();
       AppUtils.instance.showToast(AppLocale.biometricAuthFailed.translate(context));
     }
   }
@@ -157,7 +258,9 @@ class LoginController extends BaseModelStateful {
   /// Kiểm tra và tự động đăng nhập bằng biometric khi mở app
   Future<void> checkAndAutoLoginWithBiometric(BuildContext context) async {
     try {
-      if (!hasBiometricCredentials) {
+      // Kiểm tra xem có tokens đã lưu không
+      final hasTokens = await hasStoredTokens();
+      if (!hasTokens) {
         return;
       }
 
@@ -239,10 +342,12 @@ class LoginController extends BaseModelStateful {
       // Lưu username
       setUserName();
       
-      // Lưu credentials để dùng cho biometric login
-      if (username.trim().isNotEmpty && password.trim().isNotEmpty) {
-        await saveBiometricCredentials(username, password);
-      }
+      // Lưu tokens vào secure storage để dùng cho biometric login
+      // Note: Trong production, sẽ lấy refreshToken từ server response
+      await saveTokensToSecureStorage(
+        authentication: mockAuth,
+        refreshToken: null, // TODO: Lấy từ server response khi có
+      );
       
       // Chuyển vào màn hình chính
       await Future.delayed(const Duration(milliseconds: 500)); // Delay nhỏ để UX mượt hơn

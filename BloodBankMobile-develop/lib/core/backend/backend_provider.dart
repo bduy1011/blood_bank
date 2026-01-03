@@ -17,6 +17,7 @@ import 'package:blood_donation/models/register_donation_blood_response.dart';
 import 'package:blood_donation/models/slide_model.dart';
 import 'package:blood_donation/models/system_config.dart';
 import 'package:blood_donation/models/ward.dart';
+import 'package:blood_donation/utils/secure_token_service.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -147,7 +148,20 @@ class BackendProvider {
     }
     if (authenticationResponse?.data != null) {
       if (authenticationResponse?.data!.accessToken?.isNotEmpty == true) {
-        return authenticationResponse!.data;
+        final auth = authenticationResponse!.data!;
+        
+        // Lưu authentication vào localStorage
+        await _localStorage.saveAuthentication(authentication: auth);
+        
+        // Lưu tokens vào secure storage cho biometric login
+        // Note: Nếu server trả về refreshToken, lấy từ authenticationResponse.data
+        final tokenService = SecureTokenService();
+        await tokenService.saveTokens(
+          accessToken: auth.accessToken!,
+          refreshToken: null, // TODO: Lấy từ server response nếu có
+        );
+        
+        return auth;
       }
     } else {
       if (authenticationResponse?.message != null) {
@@ -234,9 +248,20 @@ class BackendProvider {
     }
     if (authenticationResponse?.data != null) {
       if (authenticationResponse?.data!.accessToken?.isNotEmpty == true) {
-        await _localStorage.saveAuthentication(
-            authentication: authenticationResponse!.data!);
-        return authenticationResponse.data;
+        final auth = authenticationResponse!.data!;
+        
+        // Lưu authentication vào localStorage
+        await _localStorage.saveAuthentication(authentication: auth);
+        
+        // Lưu tokens vào secure storage cho biometric login
+        // Note: Nếu server trả về refreshToken, lấy từ authenticationResponse.data
+        final tokenService = SecureTokenService();
+        await tokenService.saveTokens(
+          accessToken: auth.accessToken!,
+          refreshToken: null, // TODO: Lấy từ server response nếu có refreshToken
+        );
+        
+        return auth;
       }
     } else {
       if (authenticationResponse?.message != null) {
@@ -300,6 +325,13 @@ class BackendProvider {
     } catch (e) {
       // TODO
       await _localStorage.clearAuthentication();
+    }
+    // Xóa tokens khỏi secure storage
+    try {
+      final tokenService = SecureTokenService();
+      await tokenService.clearTokens();
+    } catch (e) {
+      log("clearTokens() error: $e");
     }
     notifyAuthentication(isAuthenticated: false);
   }
