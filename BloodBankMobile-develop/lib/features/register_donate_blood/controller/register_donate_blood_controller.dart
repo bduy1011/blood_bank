@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:typed_data';
 
 import 'package:blood_donation/app/config/routes.dart';
 import 'package:blood_donation/base/base_view/base_view.dart';
@@ -13,6 +14,7 @@ import '../../../app/app_util/enum.dart';
 import '../../../models/answer_question.dart';
 import '../../../models/answer_question_detail.dart';
 import '../../../models/blood_donation_event.dart';
+import '../../../models/citizen.dart';
 import '../../../models/district.dart';
 import '../../../models/general_response.dart';
 import '../../../models/province.dart';
@@ -22,6 +24,7 @@ import '../../../models/register_donation_blood_response.dart';
 import '../../../models/ward.dart';
 import '../../../utils/app_utils.dart';
 import '../../donation_schedule/presentation/history_dialog_page.dart';
+import '../../scan_qr_code/scan_qr_code_screen.dart';
 
 class RegisterDonateBloodController extends BaseModelStateful {
   BloodDonationEvent? event;
@@ -57,7 +60,19 @@ class RegisterDonateBloodController extends BaseModelStateful {
       traLoiCauHoiChiTiets: [],
     ),
   );
-  int page = 2;
+  int page = 2; // Start at form page
+
+  // Digital signature flow variables
+  Uint8List? donorSignatureBytes;
+  Uint8List? staffSignatureBytes;
+  Uint8List? doctorSignatureBytes;
+  Uint8List? nurseSignatureBytes;
+
+  // Vital signs
+  TextEditingController systolicController = TextEditingController();
+  TextEditingController diastolicController = TextEditingController();
+  TextEditingController heartRateController = TextEditingController();
+  TextEditingController temperatureController = TextEditingController();
 
   @override
   void onBack() async {
@@ -153,6 +168,10 @@ class RegisterDonateBloodController extends BaseModelStateful {
     emailController.dispose();
     ngheNghiepController.dispose();
     coQuanController.dispose();
+    systolicController.dispose();
+    diastolicController.dispose();
+    heartRateController.dispose();
+    temperatureController.dispose();
     return super.onClose();
   }
 
@@ -166,20 +185,38 @@ class RegisterDonateBloodController extends BaseModelStateful {
   }
 
   Future<void> checkValidateProfile() async {
-    if (appCenter.authentication?.cmnd?.isNotEmpty == true) {
+    // Reload authentication from storage to ensure we have latest data
+    try {
+      var savedAuth = appCenter.localStorage.authentication;
+      if (savedAuth != null) {
+        appCenter.setAuthentication(savedAuth);
+      }
+    } catch (e) {
+      // Ignore error, continue with current authentication
+    }
+
+    // Check if cmnd exists and is not empty
+    var cmnd = appCenter.authentication?.cmnd?.trim();
+
+    if (cmnd != null &&
+        cmnd.isNotEmpty &&
+        (cmnd.length == 9 || cmnd.length == 12)) {
       await init();
       if (event == null) {
         showDialogChooseEvent();
       } else {
-        checkValidateEvent();
+        await checkValidateEvent();
+        // After validation, stay on current page (form page 2)
       }
     } else {
       ///
       await AppUtils.instance.showMessage(
-        AppLocale.pleaseUpdatePersonalInfoBeforeRegister.translate(Get.context!),
+        AppLocale.pleaseUpdatePersonalInfoBeforeRegister
+            .translate(Get.context!),
         context: Get.context,
       );
-      Get.offNamed(Routes.profile);
+      // Use Get.toNamed instead of Get.offNamed to allow user to go back
+      Get.toNamed(Routes.profile);
     }
   }
 
@@ -193,7 +230,7 @@ class RegisterDonateBloodController extends BaseModelStateful {
       event = result["event"];
       refresh();
       initProfile();
-      checkValidateEvent();
+      await checkValidateEvent();
       refresh();
     } else {
       Get.back();
@@ -537,34 +574,12 @@ class RegisterDonateBloodController extends BaseModelStateful {
 
   final formKey = GlobalKey<FormState>();
 
+  // TODO: Remove bypass when ready for production
+  static const bool bypassValidation = true; // Set to false when ready
+  static const bool bypassToSignature =
+      true; // Set to true to jump directly to signature page (page 4)
+
   void updateNextPage(int newPage) {
-    if (newPage == 3) {
-      if (formKey.currentState?.validate() != true) {
-        // You can perform actions with the form data here and extract the details
-        // print('Name: $_name'); // Print the name
-        // print('Email: $_email'); // Print the email
-        AppUtils.instance.showMessage(
-          AppLocale.pleaseEnterFullInfo.translate(Get.context!),
-          context: Get.context,
-        );
-        return;
-      }
-      // if (registerDonationBlood.hoVaTen?.isNotEmpty != true ||
-      //     registerDonationBlood.namSinh?.toString().isNotEmpty != true ||
-      //     registerDonationBlood.diaChiLienLac?.isNotEmpty != true ||
-      //     registerDonationBlood.gioiTinh == null ||
-      //     registerDonationBlood.cmnd?.isNotEmpty != true ||
-      //     registerDonationBlood.maTinh?.isNotEmpty != true ||
-      //     registerDonationBlood.maHuyen?.isNotEmpty != true ||
-      //     registerDonationBlood.maXa?.isNotEmpty != true ||
-      //     registerDonationBlood.soDT?.isNotEmpty != true) {
-      //   AppUtils.instance.showMessage(
-      //     "Vui lòng nhập đủ thông tin\nđể tiếp tục!",
-      //     context: Get.context,
-      //   );
-      //   return;
-      // }
-    }
     page = newPage;
     refresh();
   }
@@ -583,20 +598,19 @@ class RegisterDonateBloodController extends BaseModelStateful {
       if (response.status == 200) {
         var registerDonationData = response.data!;
         hideLoading();
+
+        // Update registerDonationBlood with the response data (including ID)
+        registerDonationBlood = registerDonationData;
+        registerDonationData.surveyQuestions ??=
+            registerDonationBlood.surveyQuestions;
+
         await AppUtils.instance.showMessage(
           "Đăng ký thành công",
           context: Get.context,
         );
 
-        registerDonationData.surveyQuestions ??=
-            registerDonationBlood.surveyQuestions;
-
-        ///
-        await createImageQRCode(registerDonationData);
-
+        // Go back after successful registration
         Get.back();
-
-        ///
       } else {
         AppUtils.instance.showToast(
           response.message ?? "",
@@ -639,5 +653,142 @@ class RegisterDonateBloodController extends BaseModelStateful {
 
   Future<List<Question>> getQuestions() async {
     return appCenter.backendProvider.getQuestions();
+  }
+
+  Future<void> completeBloodDonation() async {
+    try {
+      if (registerDonationBlood.id == null || registerDonationBlood.id == 0) {
+        AppUtils.instance.showToast(
+          AppLocale.errorOccurredPleaseRetry.translate(Get.context!),
+        );
+        return;
+      }
+
+      showLoading();
+
+      // Update status to "Đã hiến máu"
+      final updatedData = registerDonationBlood.copyWith(
+        tinhTrang: TinhTrangDangKyHienMau.DaHienMau.value,
+      );
+
+      final response =
+          await appCenter.backendProvider.cancelRegisterDonateBlood(
+        body: updatedData.toJson(),
+        id: registerDonationBlood.id!,
+      );
+
+      if (response.status == 200) {
+        // Send thank you letter
+        try {
+          await appCenter.backendProvider.getHTMLLetter(
+            registerDonationBlood.id.toString(),
+            'thank_you',
+          );
+        } catch (e) {
+          log("Error sending thank you letter: $e");
+          // Continue even if thank you letter fails
+        }
+
+        hideLoading();
+
+        await AppUtils.instance.showMessage(
+          AppLocale.bloodDonationCompleted.translate(Get.context!),
+          context: Get.context,
+        );
+
+        Get.back();
+      } else {
+        hideLoading();
+        AppUtils.instance.showToast(
+          response.message ??
+              AppLocale.updateStatusFailed.translate(Get.context!),
+        );
+      }
+    } catch (e, s) {
+      log("completeBloodDonation()", error: e, stackTrace: s);
+      hideLoading();
+      AppUtils.instance.showToast(
+        AppLocale.errorOccurredPleaseRetry.translate(Get.context!),
+      );
+    }
+  }
+
+  // Quét QR code từ căn cước công dân để map dữ liệu vào form đăng ký hiến máu
+  Future<void> scanQRCodeForRegistration(BuildContext context) async {
+    try {
+      await Get.to(
+        () => ScanQrCodeScreen(
+          title: AppLocale.scanQRCCCD.translate(context),
+          onScan: (code) async {
+            try {
+              // Parse QR code thành Citizen model
+              final citizen = Citizen.fromQRCode(code);
+
+              // Validate thông tin
+              if (!citizen.isValid()) {
+                final errors = citizen.getValidationErrors();
+                AppUtils.instance.showMessage(
+                  errors.join("\n"),
+                  context: Get.context,
+                );
+                return false;
+              }
+
+              // Map dữ liệu vào form
+              // CCCD/Căn cước
+              idCardController.text = citizen.idCard;
+              updateProfile(idCard: citizen.idCard);
+
+              // Họ và tên
+              nameController.text = citizen.fullName;
+              updateProfile(name: citizen.fullName);
+
+              // Năm sinh (từ ngày sinh ddmmyyyy)
+              if (citizen.dateOfBirth != null && citizen.isValidDateOfBirth()) {
+                final dateOfBirth = citizen.getDateOfBirthAsDateTime();
+                if (dateOfBirth != null) {
+                  namSinhController.text = dateOfBirth.year.toString();
+                  updateProfile(
+                    namSinh: dateOfBirth.year,
+                    ngaySinh: dateOfBirth,
+                  );
+                }
+              }
+
+              // Giới tính
+              if (citizen.gender != null) {
+                final isMale = citizen.gender!.toLowerCase().contains("nam");
+                updateProfile(gioiTinh: isMale);
+              }
+
+              // Địa chỉ
+              if (citizen.address != null && citizen.address!.isNotEmpty) {
+                diaChiController.text = citizen.address!;
+                updateProfile(diaChiLienLac: citizen.address);
+              }
+
+              // Hiển thị toast thành công
+              AppUtils.instance.showToast(
+                AppLocale.qrCodeReadSuccess.translate(context),
+              );
+
+              refresh();
+              return true;
+            } catch (e) {
+              log("scanQRCodeForRegistration()", error: e);
+              AppUtils.instance.showToast(
+                AppLocale.qrCodeReadError.translate(context),
+              );
+              return false;
+            }
+          },
+        ),
+      );
+    } catch (e, t) {
+      log("scanQRCodeForRegistration()", error: e, stackTrace: t);
+      AppUtils.instance.showToast(
+        AppLocale.qrScanError.translate(context),
+      );
+    }
   }
 }
