@@ -20,25 +20,46 @@ import 'core/storage/local_storage.dart';
 import 'utils/widget/loading_widget.dart';
 
 void main() async {
-  // usePathUrlStrategy();
-  // runZonedGuarded(() async {
   WidgetsFlutterBinding.ensureInitialized();
   configureDependencies(AppConfig.prod());
-  // Init
-  await Firebase.initializeApp();
 
-  ///
-  await LocalStorage().init();
+  try {
+    await Firebase.initializeApp();
+  } catch (_) {}
 
-  ///
-  configLoading();
-  BackendProvider().create(url: getIt<AppConfig>().backendUrl);
+  try {
+    await LocalStorage().init();
+  } catch (_) {}
+
+  try {
+    BackendProvider().create(
+      url: getIt<AppConfig>().backendUrl,
+    );
+  } catch (_) {}
 
   runApp(const MainPage());
-  // }, (error, stackTrace) {
-  //   log("runZonedGuarded() $error", error: error, stackTrace: stackTrace);
-  // });
 }
+
+// void main() async {
+//   // usePathUrlStrategy();
+//   // runZonedGuarded(() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   configureDependencies(AppConfig.prod());
+//   // Init
+//   await Firebase.initializeApp();
+
+//   ///
+//   await LocalStorage().init();
+
+//   ///
+//   configLoading();
+//   BackendProvider().create(url: getIt<AppConfig>().backendUrl);
+
+//   runApp(const MainPage());
+//   // }, (error, stackTrace) {
+//   //   log("runZonedGuarded() $error", error: error, stackTrace: stackTrace);
+//   // });
+// }
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});

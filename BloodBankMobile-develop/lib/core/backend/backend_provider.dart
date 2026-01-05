@@ -52,6 +52,17 @@ class BackendProvider {
   final isAuthenticatedNotifier = ValueNotifier<bool>(false);
   FirebaseAuth get _firebaseAuth => FirebaseAuth.instance;
 
+  bool _isJwtExpiredSafe(String? token) {
+    if (token == null || token.isEmpty) return true;
+    if (!token.contains('.')) return true;
+
+    try {
+      return JwtDecoder.isExpired(token);
+    } catch (_) {
+      return true;
+    }
+  }
+
   bool get isAuthenticated {
     if (!isLoginExpired) {
       return true;
@@ -59,14 +70,18 @@ class BackendProvider {
     return isAuthenticatedNotifier.value;
   }
 
+  // bool get isLoginExpired {
+  //   if (_localStorage.authentication?.accessToken?.isNotEmpty != true) {
+  //     return true;
+  //   }
+  //   final isExpired =
+  //       JwtDecoder.isExpired(_localStorage.authentication!.accessToken ?? "");
+  //   notifyAuthentication(isAuthenticated: !isExpired);
+  //   return isExpired;
+  // }
   bool get isLoginExpired {
-    if (_localStorage.authentication?.accessToken?.isNotEmpty != true) {
-      return true;
-    }
-    final isExpired =
-        JwtDecoder.isExpired(_localStorage.authentication!.accessToken ?? "");
-    notifyAuthentication(isAuthenticated: !isExpired);
-    return isExpired;
+    final token = _localStorage.authentication?.accessToken;
+    return _isJwtExpiredSafe(token);
   }
 
   void notifyAuthentication({required bool isAuthenticated}) {
@@ -76,21 +91,35 @@ class BackendProvider {
     isAuthenticatedNotifier.value = isAuthenticated;
   }
 
+  // void create({required String url}) {
+  //   this.url = url;
+  //   final dio = Dio();
+
+  //   // Thêm MockInterceptor trước HeaderInterceptor để intercept trước
+  //   dio.interceptors.add(MockInterceptor());
+  //   dio.interceptors.add(HeaderInterceptor());
+
+  //   _client = BackendClient(dio);
+
+  //   notifyAuthentication(
+  //       isAuthenticated: _localStorage
+  //                   .authentication?.accessToken?.isNotEmpty ==
+  //               true &&
+  //           !JwtDecoder.isExpired(_localStorage.authentication!.accessToken!));
+  // }
   void create({required String url}) {
     this.url = url;
     final dio = Dio();
 
-    // Thêm MockInterceptor trước HeaderInterceptor để intercept trước
     dio.interceptors.add(MockInterceptor());
     dio.interceptors.add(HeaderInterceptor());
 
     _client = BackendClient(dio);
 
+    final token = _localStorage.authentication?.accessToken;
     notifyAuthentication(
-        isAuthenticated: _localStorage
-                    .authentication?.accessToken?.isNotEmpty ==
-                true &&
-            !JwtDecoder.isExpired(_localStorage.authentication!.accessToken!));
+      isAuthenticated: token != null && !_isJwtExpiredSafe(token),
+    );
   }
 
   Future<String?> register(
@@ -149,10 +178,10 @@ class BackendProvider {
     if (authenticationResponse?.data != null) {
       if (authenticationResponse?.data!.accessToken?.isNotEmpty == true) {
         final auth = authenticationResponse!.data!;
-        
+
         // Lưu authentication vào localStorage
         await _localStorage.saveAuthentication(authentication: auth);
-        
+
         // Lưu tokens vào secure storage cho biometric login
         // Note: Nếu server trả về refreshToken, lấy từ authenticationResponse.data
         final tokenService = SecureTokenService();
@@ -160,7 +189,7 @@ class BackendProvider {
           accessToken: auth.accessToken!,
           refreshToken: null, // TODO: Lấy từ server response nếu có
         );
-        
+
         return auth;
       }
     } else {
@@ -249,18 +278,19 @@ class BackendProvider {
     if (authenticationResponse?.data != null) {
       if (authenticationResponse?.data!.accessToken?.isNotEmpty == true) {
         final auth = authenticationResponse!.data!;
-        
+
         // Lưu authentication vào localStorage
         await _localStorage.saveAuthentication(authentication: auth);
-        
+
         // Lưu tokens vào secure storage cho biometric login
         // Note: Nếu server trả về refreshToken, lấy từ authenticationResponse.data
         final tokenService = SecureTokenService();
         await tokenService.saveTokens(
           accessToken: auth.accessToken!,
-          refreshToken: null, // TODO: Lấy từ server response nếu có refreshToken
+          refreshToken:
+              null, // TODO: Lấy từ server response nếu có refreshToken
         );
-        
+
         return auth;
       }
     } else {
@@ -734,11 +764,11 @@ class BackendProvider {
 
   // SmartCA Integration Methods
   /// Ký số bằng SmartCA qua Web API
-  /// 
+  ///
   /// [registrationId]: ID đăng ký hiến máu
   /// [dataToSign]: Dữ liệu cần ký (JSON string)
   /// [signatureType]: Loại chữ ký (donor, staff, doctor, nurse)
-  /// 
+  ///
   /// Returns: Map chứa chữ ký số (base64) và thông tin khác
   Future<Map<String, dynamic>?> signWithSmartCA({
     required String registrationId,
@@ -783,7 +813,7 @@ class BackendProvider {
   }
 
   /// Upload chữ ký số đã ký vào đăng ký hiến máu
-  /// 
+  ///
   /// [registrationId]: ID đăng ký hiến máu
   /// [signatureType]: Loại chữ ký (donor, staff, doctor, nurse)
   /// [signatureBase64]: Chữ ký số (base64 encoded)
