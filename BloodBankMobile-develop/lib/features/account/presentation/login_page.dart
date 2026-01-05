@@ -31,7 +31,7 @@ class _LoginPageState extends BaseViewStateful<LoginPage, LoginController> {
 
   bool _showPassword = false;
   bool _biometricAvailable = false;
-  bool _hasBiometricCredentials = false;
+  String _biometricTypeName = 'Biometric';
   final BiometricAuthService _biometricAuthService = BiometricAuthService();
 
   @override
@@ -44,10 +44,10 @@ class _LoginPageState extends BaseViewStateful<LoginPage, LoginController> {
 
   Future<void> _checkBiometricAvailability() async {
     final isAvailable = await _biometricAuthService.isAvailable();
-    final hasTokens = await controller.hasStoredTokens();
+    final biometricTypeName = await _biometricAuthService.getBiometricTypeName();
     setState(() {
       _biometricAvailable = isAvailable;
-      _hasBiometricCredentials = hasTokens;
+      _biometricTypeName = biometricTypeName;
     });
   }
 
@@ -97,8 +97,7 @@ class _LoginPageState extends BaseViewStateful<LoginPage, LoginController> {
                             spacing: 40,
                           ),
                           buildButtonLogin(context),
-                          if (_biometricAvailable &&
-                              _hasBiometricCredentials) ...[
+                          if (_biometricAvailable) ...[
                             const SizedBox(height: 20),
                             buildBiometricLoginButton(context),
                           ],
@@ -267,23 +266,49 @@ class _LoginPageState extends BaseViewStateful<LoginPage, LoginController> {
   }
 
   Widget buildBiometricLoginButton(BuildContext context) {
-    return OutlinedButton.icon(
-      onPressed: () {
-        controller.loginWithBiometric(context);
-      },
-      icon: const Icon(Icons.fingerprint, size: 24),
-      label: Text(
-        AppLocale.loginWithBiometric.translate(context),
-        style: context.myTheme.textThemeT1.title,
-      ),
-      style: OutlinedButton.styleFrom(
-        side: const BorderSide(color: Color.fromARGB(255, 229, 59, 59)),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(50),
-        ),
-        padding: const EdgeInsets.symmetric(
-          vertical: 15,
-          horizontal: 40,
+    // Xác định icon dựa trên loại biometric
+    IconData biometricIcon = Icons.fingerprint;
+    if (_biometricTypeName.contains('Face ID') || _biometricTypeName.contains('Face')) {
+      biometricIcon = Icons.face;
+    } else if (_biometricTypeName.contains('Vân tay') || _biometricTypeName.contains('Fingerprint')) {
+      biometricIcon = Icons.fingerprint;
+    }
+
+    return Center(
+      child: InkWell(
+        onTap: () {
+          controller.loginWithBiometric(context);
+        },
+        borderRadius: BorderRadius.circular(50),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(50),
+            border: Border.all(
+              color: const Color.fromARGB(255, 229, 59, 59).withOpacity(0.5),
+              width: 1.5,
+            ),
+            color: const Color.fromARGB(255, 229, 59, 59).withOpacity(0.05),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                biometricIcon,
+                size: 20,
+                color: const Color.fromARGB(255, 229, 59, 59),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                AppLocale.loginWithBiometric.translate(context),
+                style: context.myTheme.textThemeT1.title.copyWith(
+                  color: const Color.fromARGB(255, 229, 59, 59),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

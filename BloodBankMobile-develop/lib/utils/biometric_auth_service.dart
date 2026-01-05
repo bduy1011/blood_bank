@@ -6,7 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 
 class BiometricAuthService {
-  static final BiometricAuthService _instance = BiometricAuthService._internal();
+  static final BiometricAuthService _instance =
+      BiometricAuthService._internal();
   factory BiometricAuthService() => _instance;
   BiometricAuthService._internal();
 
@@ -16,16 +17,17 @@ class BiometricAuthService {
   /// Kiểm tra xem có đang chạy trên emulator không
   Future<bool> isRunningOnEmulator() async {
     if (_isEmulator != null) return _isEmulator!;
-    
+
     try {
       if (Platform.isAndroid) {
         final deviceInfo = DeviceInfoPlugin();
         final androidInfo = await deviceInfo.androidInfo;
         // Emulator thường có model chứa "sdk" hoặc "google_sdk"
-        _isEmulator = androidInfo.model.toLowerCase().contains('sdk') ||
-            androidInfo.model.toLowerCase().contains('google_sdk') ||
-            androidInfo.manufacturer.toLowerCase() == 'google' ||
-            androidInfo.isPhysicalDevice == false;
+        // _isEmulator = androidInfo.model.toLowerCase().contains('sdk') ||
+        //     androidInfo.model.toLowerCase().contains('google_sdk') ||
+        //     androidInfo.manufacturer.toLowerCase() == 'google' ||
+        //     androidInfo.isPhysicalDevice == false;
+        _isEmulator = androidInfo.isPhysicalDevice == false;
       } else if (Platform.isIOS) {
         final deviceInfo = DeviceInfoPlugin();
         final iosInfo = await deviceInfo.iosInfo;
@@ -87,81 +89,106 @@ class BiometricAuthService {
         return await _authenticateMock(context, reason);
       }
 
-      // Sử dụng biometric thật trên thiết bị thật
+      // Trên thiết bị thật, để local_auth tự xử lý và hiển thị dialog
+      // Không kiểm tra trước để tránh chặn dialog hiển thị
+      // local_auth sẽ tự hiển thị dialog Face ID/vân tay và xử lý lỗi
       final bool didAuthenticate = await _localAuth.authenticate(
         localizedReason: reason ?? 'Vui lòng xác thực để đăng nhập',
         options: AuthenticationOptions(
-          useErrorDialogs: useErrorDialogs,
+          useErrorDialogs:
+              useErrorDialogs, // Để local_auth tự hiển thị dialog lỗi nếu cần
           stickyAuth: stickyAuth,
-          biometricOnly: false,
+          biometricOnly: false, // Cho phép dùng PIN/password nếu biometric fail
         ),
       );
       return didAuthenticate;
     } on PlatformException catch (e) {
-      log("authenticate error: $e");
+      // Chỉ log lỗi, không return false ngay để user có thể thấy dialog
+      // Các lỗi như NotAvailable, NotEnrolled sẽ được local_auth xử lý qua useErrorDialogs
+      if (e.code == 'NotAvailable' || e.code == 'NotEnrolled') {
+        // Lỗi này sẽ được local_auth hiển thị dialog nếu useErrorDialogs = true
+        return false;
+      }
+      // Các lỗi khác
       return false;
     } catch (e) {
-      log("authenticate error: $e");
+      // Lỗi không mong đợi
       return false;
     }
   }
 
   /// Mock authentication dialog cho emulator
   Future<bool> _authenticateMock(BuildContext context, String? reason) async {
-    return await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Row(
-            children: [
-              Icon(Icons.fingerprint, color: Colors.blue, size: 28),
-              const SizedBox(width: 10),
-              const Text('Mock Biometric Auth'),
-            ],
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                reason ?? 'Vui lòng xác thực để đăng nhập',
-                style: const TextStyle(fontSize: 16),
+    try {
+      final result = await showDialog<bool>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext dialogContext) {
+          return AlertDialog(
+            title: const Row(
+              children: [
+                Icon(Icons.fingerprint, color: Colors.blue, size: 28),
+                SizedBox(width: 10),
+                Text('Mock Biometric Auth'),
+              ],
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  reason ?? 'Vui lòng xác thực để đăng nhập',
+                  style: const TextStyle(fontSize: 16),
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  '(Emulator Mode - Simulating biometric authentication)',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontStyle: FontStyle.italic,
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(dialogContext).pop(false);
+                },
+                child: const Text('Hủy'),
               ),
-              const SizedBox(height: 20),
-              const Text(
-                '(Emulator Mode - Simulating biometric authentication)',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontStyle: FontStyle.italic,
-                  color: Colors.grey,
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(dialogContext).pop(true);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                ),
+                child: const Text('Xác thực thành công'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(dialogContext).pop(false);
+                },
+                child: const Text(
+                  'Thất bại',
+                  style: TextStyle(color: Colors.red),
                 ),
               ),
             ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Hủy'),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.white,
-              ),
-              child: const Text('Xác thực thành công'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text(
-                'Thất bại',
-                style: TextStyle(color: Colors.red),
-              ),
-            ),
-          ],
-        );
-      },
-    ) ?? false;
+          );
+        },
+      );
+
+      // Đảm bảo dialog đã đóng hoàn toàn
+      await Future.delayed(const Duration(milliseconds: 100));
+
+      return result ?? false;
+    } catch (e) {
+      log("_authenticateMock error: $e");
+      return false;
+    }
   }
 
   /// Kiểm tra xem có thể xác thực không (có biometric và đã đăng ký hoặc đang trên emulator)
@@ -172,7 +199,7 @@ class BiometricAuthService {
       if (isEmulator) {
         return true;
       }
-      
+
       final bool canAuthenticate = await _localAuth.canCheckBiometrics ||
           await _localAuth.isDeviceSupported();
       return canAuthenticate;
@@ -189,7 +216,7 @@ class BiometricAuthService {
       if (availableBiometrics.isEmpty) {
         return 'Biometric';
       }
-      
+
       if (availableBiometrics.contains(BiometricType.face)) {
         return 'Face ID';
       } else if (availableBiometrics.contains(BiometricType.fingerprint)) {
@@ -208,4 +235,3 @@ class BiometricAuthService {
     }
   }
 }
-
