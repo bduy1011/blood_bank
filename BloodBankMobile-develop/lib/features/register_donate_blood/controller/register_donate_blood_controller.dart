@@ -23,6 +23,7 @@ import '../../../models/register_donation_blood.dart';
 import '../../../models/register_donation_blood_response.dart';
 import '../../../models/ward.dart';
 import '../../../utils/app_utils.dart';
+import '../../../utils/phone_number_formater.dart';
 import '../../donation_schedule/presentation/history_dialog_page.dart';
 import '../../scan_qr_code/scan_qr_code_screen.dart';
 
@@ -100,10 +101,22 @@ class RegisterDonateBloodController extends BaseModelStateful {
       initProfile();
     } else {
       ///show dialog choose event
+      // Vẫn gọi initProfile() để load dữ liệu từ authentication ngay cả khi không có event
+      initProfile();
     }
   }
 
   initProfile() {
+    // Reload authentication từ storage để đảm bảo có dữ liệu mới nhất
+    try {
+      var savedAuth = appCenter.localStorage.authentication;
+      if (savedAuth != null) {
+        appCenter.setAuthentication(savedAuth);
+      }
+    } catch (e) {
+      // Ignore error
+    }
+    
     updateProfile(
       date: event?.ngayGio,
       dotLayMauId: event?.dotLayMauId,
@@ -131,10 +144,12 @@ class RegisterDonateBloodController extends BaseModelStateful {
       email: appCenter.authentication?.dmNguoiHienMau?.email,
       ngheNghiep: appCenter.authentication?.dmNguoiHienMau?.ngheNghiep,
     );
-    phoneNumberController.text =
-        appCenter.authentication?.dmNguoiHienMau?.soDT ??
-            appCenter.authentication?.phoneNumber ??
-            "";
+    
+    phoneNumberController.text = PhoneNumberFormatter.formatString(
+        (appCenter.authentication?.dmNguoiHienMau?.soDT ??
+                appCenter.authentication?.phoneNumber ??
+                "")
+            .replaceAll(" ", ""));
     idCardController.text = appCenter.authentication?.cmnd ??
         appCenter.authentication?.dmNguoiHienMau?.cmnd ??
         "";
@@ -153,6 +168,28 @@ class RegisterDonateBloodController extends BaseModelStateful {
       ngheNghiepController.text =
           appCenter.authentication?.dmNguoiHienMau?.ngheNghiep ?? "";
     }
+
+    refresh();
+  }
+
+  /// Cập nhật các field từ dữ liệu Profile (Họ và tên, CCCD, Số điện thoại)
+  void updateFieldsFromProfile({
+    required String name,
+    required String idCard,
+    required String phoneNumber,
+  }) {
+    // Cập nhật các controller
+    nameController.text = name;
+    idCardController.text = idCard;
+    phoneNumberController.text = PhoneNumberFormatter.formatString(
+        phoneNumber.replaceAll(" ", ""));
+
+    // Cập nhật registerDonationBlood
+    updateProfile(
+      name: name,
+      idCard: idCard.replaceAll(" ", ""),
+      soDT: phoneNumber.replaceAll(" ", ""),
+    );
 
     refresh();
   }
@@ -178,10 +215,28 @@ class RegisterDonateBloodController extends BaseModelStateful {
   /// Method to hide the ready indicator.
   @override
   Future<void> onReady() async {
+    log("🟡 [RegisterDonateBloodController] onReady() - Màn hình sẵn sàng");
     // Implement your hide ready indicator logic here
     checkValidateProfile();
+    
+    // Reload profile data from authentication when screen is ready
+    // This ensures data is up-to-date when returning from Profile page
+    // Gọi initProfile() ngay cả khi event == null để load dữ liệu từ authentication
+    log("🟡 [RegisterDonateBloodController] onReady() - Gọi initProfile() để load dữ liệu từ authentication");
+    initProfile();
 
     super.onReady();
+  }
+
+  @override
+  void onDidUpdateWidget() {
+    log("🟡 [RegisterDonateBloodController] onDidUpdateWidget() - Widget được update");
+    // Reload profile data when widget is updated (e.g., when returning from Profile page)
+    // This ensures data is up-to-date after updating profile
+    // Gọi initProfile() ngay cả khi event == null để load dữ liệu mới từ authentication
+    log("🟡 [RegisterDonateBloodController] onDidUpdateWidget() - Gọi initProfile() để reload dữ liệu từ authentication");
+    initProfile();
+    super.onDidUpdateWidget();
   }
 
   Future<void> checkValidateProfile() async {
@@ -216,7 +271,10 @@ class RegisterDonateBloodController extends BaseModelStateful {
         context: Get.context,
       );
       // Use Get.toNamed instead of Get.offNamed to allow user to go back
-      Get.toNamed(Routes.profile);
+      // Listen result để reload dữ liệu khi quay lại từ Profile
+      await Get.toNamed(Routes.profile);
+      // Khi quay lại từ Profile, reload dữ liệu từ authentication
+      initProfile();
     }
   }
 

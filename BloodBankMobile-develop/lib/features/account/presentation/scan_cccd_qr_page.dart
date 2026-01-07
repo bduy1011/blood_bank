@@ -32,10 +32,10 @@ class _ScanCCCDQRPageState extends State<ScanCCCDQRPage> {
         facing: CameraFacing.back,
         autoStart: false, // Không auto start, sẽ start sau khi có quyền
       );
-      
+
       // MobileScanner sẽ tự xin quyền camera khi start
       await _controller?.start();
-      
+
       if (mounted) {
         setState(() {
           _hasError = false;
@@ -55,7 +55,7 @@ class _ScanCCCDQRPageState extends State<ScanCCCDQRPage> {
 
   void _handleQRCode(String? rawValue) {
     if (rawValue == null || rawValue.isEmpty) return;
-    
+
     // Tạm dừng scanner để tránh scan nhiều lần
     _controller?.stop();
 
@@ -223,9 +223,7 @@ class _ScanCCCDQRPageState extends State<ScanCCCDQRPage> {
               topRight: Radius.circular(30),
             ),
           ),
-          child: _hasError
-              ? _buildErrorView()
-              : _buildScannerView(),
+          child: _hasError ? _buildErrorView() : _buildScannerView(),
         ),
       ),
     );
@@ -249,7 +247,7 @@ class _ScanCCCDQRPageState extends State<ScanCCCDQRPage> {
               }
             }
           },
-          errorBuilder: (context, error, child) {
+          errorBuilder: (context, error) {
             log("MobileScanner error: $error");
             return Center(
               child: Column(
@@ -370,4 +368,3 @@ class _ScanCCCDQRPageState extends State<ScanCCCDQRPage> {
     );
   }
 }
-

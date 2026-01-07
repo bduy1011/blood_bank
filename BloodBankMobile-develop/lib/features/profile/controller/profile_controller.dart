@@ -11,6 +11,7 @@ import '../../../models/blood_donor.dart';
 import '../../../utils/app_utils.dart';
 import '../../../utils/phone_number_formater.dart';
 import '../../home/controller/home_controller.dart';
+import '../../register_donate_blood/controller/register_donate_blood_controller.dart';
 import '../../scan_qr_code/scan_qr_code_screen.dart';
 
 class ProfileController extends BaseModelStateful {
@@ -63,8 +64,6 @@ class ProfileController extends BaseModelStateful {
   }
 
   void updateProfile(BuildContext context) async {
-    // backendProvider.logout();
-    // print(appCenter.authentication?.toJson());
     FocusScope.of(context).requestFocus(FocusNode());
     var cccd = idCardController.text.trim().replaceAll(" ", "");
     var phoneNumber = phoneNumberController.text.trim().replaceAll(" ", "");
@@ -113,14 +112,48 @@ class ProfileController extends BaseModelStateful {
         refresh();
         Get.findOrNull<HomeController>()?.onRefresh();
         
-        // In bypass mode, if user came from another page (can pop), auto go back
-        // This allows user to return to register donate blood page automatically
+        // Lấy dữ liệu từ các controller của Profile và map vào RegisterDonateBloodController
+        try {
+          // Thử tìm controller bằng nhiều cách
+          RegisterDonateBloodController? registerController;
+          
+          // Cách 1: Tìm trong GetX
+          registerController = Get.findOrNull<RegisterDonateBloodController>();
+          
+          // Cách 2: Nếu không tìm thấy, thử tìm trong Get.engine
+          if (registerController == null) {
+            try {
+              registerController = Get.find<RegisterDonateBloodController>();
+            } catch (e) {
+              // Ignore error
+            }
+          }
+          
+          if (registerController != null) {
+            // Lấy giá trị từ Profile controllers
+            final name = fullnameController.text.trim();
+            final idCard = idCardController.text.trim();
+            final phoneNumber = phoneNumberController.text.trim();
+            
+            // Map vào các field tương ứng trong màn hình đăng ký hiến máu
+            registerController.updateFieldsFromProfile(
+              name: name,
+              idCard: idCard,
+              phoneNumber: phoneNumber,
+            );
+          }
+        } catch (e) {
+          // Ignore error
+        }
+        
+        // Luôn tự động quay lại màn hình đăng ký hiến máu nếu có thể
+        // Dữ liệu đã được lưu vào authentication, sẽ tự động load khi quay lại
         var navigator = Get.key.currentState;
         if (navigator != null && navigator.canPop()) {
-          // User came from another page (like register donate blood), go back
-          Get.back();
+          Get.back(result: true);
+          return;
         }
-        // If can't pop, user stays on profile page
+        
         return;
       }
 
@@ -169,11 +202,49 @@ class ProfileController extends BaseModelStateful {
         refresh();
         Get.findOrNull<HomeController>()?.onRefresh();
 
-        ///
-        // Don't auto navigate to home - let user manually navigate
-        // This prevents interrupting user flow when they come from register donate blood page
-        // User can press back button to return to previous page
+        // Lấy dữ liệu từ các controller của Profile và map vào RegisterDonateBloodController
+        try {
+          // Thử tìm controller bằng nhiều cách
+          RegisterDonateBloodController? registerController;
+          
+          // Cách 1: Tìm trong GetX
+          registerController = Get.findOrNull<RegisterDonateBloodController>();
+          
+          // Cách 2: Nếu không tìm thấy, thử tìm trong Get.engine
+          if (registerController == null) {
+            try {
+              registerController = Get.find<RegisterDonateBloodController>();
+            } catch (e) {
+              // Ignore error
+            }
+          }
+          
+          if (registerController != null) {
+            // Lấy giá trị từ Profile controllers
+            final name = fullnameController.text.trim();
+            final idCard = idCardController.text.trim();
+            final phoneNumber = phoneNumberController.text.trim();
+            
+            // Map vào các field tương ứng trong màn hình đăng ký hiến máu
+            registerController.updateFieldsFromProfile(
+              name: name,
+              idCard: idCard,
+              phoneNumber: phoneNumber,
+            );
+          }
+        } catch (e) {
+          // Ignore error
+        }
 
+        ///
+        // Luôn tự động quay lại màn hình đăng ký hiến máu nếu có thể
+        // Dữ liệu đã được lưu vào authentication, sẽ tự động load khi quay lại
+        var navigator = Get.key.currentState;
+        if (navigator != null && navigator.canPop()) {
+          Get.back(result: true);
+          return;
+        }
+        
         return;
       }
       AppUtils.instance.showToast(

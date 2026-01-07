@@ -21,7 +21,7 @@ class RegisterDonateBloodPage extends StatefulWidget {
 }
 
 class _RegisterDonateBloodPageState extends BaseViewStateful<
-    RegisterDonateBloodPage, RegisterDonateBloodController> {
+    RegisterDonateBloodPage, RegisterDonateBloodController> with WidgetsBindingObserver {
   @override
   RegisterDonateBloodController dependencyController() {
     // TODO: implement dependencyController
@@ -29,7 +29,65 @@ class _RegisterDonateBloodPageState extends BaseViewStateful<
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    // Khi app trở lại foreground, reload dữ liệu
+    if (state == AppLifecycleState.resumed) {
+      controller.initProfile();
+    }
+  }
+
+  bool _hasInitialized = false;
+  DateTime? _lastReloadTime;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Reload dữ liệu khi dependencies thay đổi (khi quay lại từ màn hình khác)
+    if (_hasInitialized) {
+      // Chỉ reload nếu đã được khởi tạo trước đó (tức là đang quay lại, không phải lần đầu mở)
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _reloadProfileData();
+      });
+    } else {
+      _hasInitialized = true;
+    }
+  }
+
+  void _reloadProfileData() {
+    // Debounce: chỉ reload nếu đã qua ít nhất 300ms từ lần reload trước
+    final now = DateTime.now();
+    if (_lastReloadTime == null || 
+        now.difference(_lastReloadTime!) > const Duration(milliseconds: 300)) {
+      _lastReloadTime = now;
+      controller.initProfile();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // Reload dữ liệu khi build (khi quay lại từ màn hình khác)
+    // Sử dụng post-frame callback và debounce để tránh gọi quá nhiều lần
+    if (_hasInitialized) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _reloadProfileData();
+        }
+      });
+    }
+    
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
