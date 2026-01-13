@@ -1,7 +1,9 @@
 import 'dart:developer';
 
 import 'package:blood_donation/base/base_view/base_view.dart';
+import 'package:blood_donation/core/localization/app_locale.dart';
 import 'package:blood_donation/models/authentication.dart';
+import 'package:blood_donation/utils/app_utils.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
@@ -22,8 +24,30 @@ class HomeController extends BaseModelStateful {
   RefreshController? refreshController =
       RefreshController(initialRefresh: false);
 
-  void logout() {
-    backendProvider.logout();
+  Future<void> logout() async {
+    try {
+      final context = Get.context!;
+      // Xác nhận trước khi đăng xuất
+      var rs = await AppUtils.instance.showMessageConfirm(
+        AppLocale.confirmLogout.translate(context),
+        AppLocale.logoutMessage.translate(context),
+        context: context,
+      );
+
+      if (rs == true) {
+        showLoading();
+        await backendProvider.logout();
+        hideLoading();
+        AppUtils.instance.showToast(AppLocale.logout.translate(context));
+      }
+    } catch (e, t) {
+      log("logout()", error: e, stackTrace: t);
+      hideLoading();
+      final context = Get.context;
+      if (context != null) {
+        AppUtils.instance.showToast(AppLocale.logoutFailed.translate(context));
+      }
+    }
   }
 
   @override

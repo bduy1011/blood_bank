@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>633192325894-9md794f3fi345345345ik1k408q6.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.63453454894-9md794f3fitn17rkpfgnp7lik1k408q6</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>633192325894-bps5jb4o534534545316a4mo25ggaar.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDummyKeyForTestingOnly1234567890123456789</string>
+	<key>GCM_SENDER_ID</key>
+	<string>633192325894</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.blood.choray</string>
+	<key>PROJECT_ID</key>
+	<string>blood-bank-8d0ed</string>
+	<key>STORAGE_BUCKET</key>
+	<string>blood-bank-8d0ed.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:633192325894:ios:0034543535915023f487</string>
+	<key>DATABASE_URL</key>
+	<string>https://blood-bank-8234d-default-rtdb.asia-southeast1.firebasedatabase.app</string>
+</dict>
+</plist>
+

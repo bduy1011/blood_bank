@@ -112,11 +112,11 @@ class _ProfilePageState
                               labelText: AppLocale.fullname.translate(context),
                               enabled: controller.note == null),
                           const VSpacing(spacing: 16),
-
-                          // _buildYearPicker(
-                          //     controller: controller.birthYearController,
-                          //     labelText: AppLocale.birthYear.translate(context)),
-                          // const VSpacing(spacing: 16),
+                          _buildDatePicker(
+                              controller: controller.dateOfBirthController,
+                              labelText: AppLocale.dateOfBirth.translate(context),
+                              enabled: controller.note == null),
+                          const VSpacing(spacing: 16),
                           _buildTextField(
                               controller: controller.idCardController,
                               labelText: AppLocale.idCard.translate(context),
@@ -251,6 +251,83 @@ class _ProfilePageState
         style: context.myTheme.textThemeT1.title.copyWith(color: Colors.white),
       ),
     );
+  }
+
+  Widget _buildDatePicker({
+    required TextEditingController controller,
+    required String labelText,
+    bool isRequired = false,
+    bool enabled = true,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 5,
+            color: Colors.grey.withOpacity(0.3),
+            blurStyle: BlurStyle.outer,
+          )
+        ],
+      ),
+      child: TextFormField(
+        controller: controller,
+        readOnly: true,
+        enabled: enabled,
+        decoration: InputDecoration(
+          labelText: isRequired ? '$labelText *' : labelText,
+          labelStyle: context.myTheme.textThemeT1.body.copyWith(
+            color: Colors.grey,
+            fontWeight: isRequired ? FontWeight.bold : FontWeight.normal,
+          ),
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+        ),
+        onTap: enabled ? () async {
+          final DateTime? pickedDate = await showDatePicker(
+            context: context,
+            initialDate: controller.text.isNotEmpty 
+                ? _parseDate(controller.text) ?? DateTime.now()
+                : DateTime.now(),
+            firstDate: DateTime(1900),
+            lastDate: DateTime.now(),
+            initialDatePickerMode: DatePickerMode.day,
+          );
+          if (pickedDate != null) {
+            // Format as dd/MM/yyyy
+            final day = pickedDate.day.toString().padLeft(2, '0');
+            final month = pickedDate.month.toString().padLeft(2, '0');
+            final year = pickedDate.year.toString();
+            controller.text = '$day/$month/$year';
+          }
+        } : null,
+        validator: (value) {
+          if (isRequired && (value == null || value.trim().isEmpty)) {
+            return 'This field is required';
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  DateTime? _parseDate(String dateString) {
+    try {
+      final parts = dateString.split('/');
+      if (parts.length == 3) {
+        final day = int.parse(parts[0]);
+        final month = int.parse(parts[1]);
+        final year = int.parse(parts[2]);
+        return DateTime(year, month, day);
+      }
+    } catch (e) {
+      // Ignore parse errors
+    }
+    return null;
   }
 
   Widget _buildYearPicker({

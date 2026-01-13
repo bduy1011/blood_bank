@@ -38,7 +38,7 @@ class RegisterDonateBloodController extends BaseModelStateful {
   District? codeDistrict;
   Ward? codeWard;
   TextEditingController nameController = TextEditingController();
-  TextEditingController namSinhController = TextEditingController();
+  TextEditingController dateOfBirthController = TextEditingController();
   TextEditingController diaChiController = TextEditingController();
   TextEditingController idCardController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
@@ -79,8 +79,8 @@ class RegisterDonateBloodController extends BaseModelStateful {
   void onBack() async {
     // TODO: implement onBack
     var result = await AppUtils.instance.showMessageConfirmCancel(
-      "Xác nhận",
-      "Xác nhận thoát màn hình đăng ký hiến máu",
+      AppLocale.confirmExitRegisterDonateBlood.translate(Get.context!),
+      AppLocale.confirmExitRegisterDonateBloodMessage.translate(Get.context!),
       context: Get.context,
     );
     if (result == true) {
@@ -127,8 +127,10 @@ class RegisterDonateBloodController extends BaseModelStateful {
       ///
       name: appCenter.authentication?.dmNguoiHienMau?.hoVaTen ??
           appCenter.authentication?.name,
-      namSinh: appCenter.authentication?.dmNguoiHienMau?.namSinh?.toIntOrNull,
-      ngaySinh: appCenter.authentication?.dmNguoiHienMau?.ngaySinh,
+      namSinh: appCenter.authentication?.dmNguoiHienMau?.namSinh?.toIntOrNull ??
+          appCenter.authentication?.ngaySinh?.year,
+      ngaySinh: appCenter.authentication?.dmNguoiHienMau?.ngaySinh ??
+          appCenter.authentication?.ngaySinh,
       gioiTinh: appCenter.authentication?.dmNguoiHienMau?.gioiTinh,
       idCard: appCenter.authentication?.cmnd ??
           appCenter.authentication?.dmNguoiHienMau?.cmnd,
@@ -158,9 +160,23 @@ class RegisterDonateBloodController extends BaseModelStateful {
         "";
 
     ///
+    // Load ngày sinh - làm tương tự như CCCD (có fallback từ authentication)
+    final ngaySinh = appCenter.authentication?.dmNguoiHienMau?.ngaySinh ??
+        appCenter.authentication?.ngaySinh;
+    if (ngaySinh != null) {
+      final day = ngaySinh.day.toString().padLeft(2, '0');
+      final month = ngaySinh.month.toString().padLeft(2, '0');
+      final year = ngaySinh.year.toString();
+      final formattedDate = '$day/$month/$year';
+      dateOfBirthController.text = formattedDate;
+      // Đảm bảo updateProfile được gọi để sync dữ liệu
+      updateProfile(
+        namSinh: ngaySinh.year,
+        ngaySinh: ngaySinh,
+      );
+    }
+    
     if (appCenter.authentication?.dmNguoiHienMau != null) {
-      namSinhController.text =
-          appCenter.authentication?.dmNguoiHienMau?.namSinh ?? "";
       diaChiController.text =
           appCenter.authentication?.dmNguoiHienMau?.diaChiLienLac ?? "";
       emailController.text =
@@ -172,11 +188,12 @@ class RegisterDonateBloodController extends BaseModelStateful {
     refresh();
   }
 
-  /// Cập nhật các field từ dữ liệu Profile (Họ và tên, CCCD, Số điện thoại)
+  /// Cập nhật các field từ dữ liệu Profile (Họ và tên, CCCD, Số điện thoại, Ngày sinh)
   void updateFieldsFromProfile({
     required String name,
     required String idCard,
     required String phoneNumber,
+    DateTime? dateOfBirth,
   }) {
     // Cập nhật các controller
     nameController.text = name;
@@ -184,11 +201,22 @@ class RegisterDonateBloodController extends BaseModelStateful {
     phoneNumberController.text = PhoneNumberFormatter.formatString(
         phoneNumber.replaceAll(" ", ""));
 
+    // Cập nhật ngày sinh nếu có
+    if (dateOfBirth != null) {
+      final day = dateOfBirth.day.toString().padLeft(2, '0');
+      final month = dateOfBirth.month.toString().padLeft(2, '0');
+      final year = dateOfBirth.year.toString();
+      final formattedDate = '$day/$month/$year';
+      dateOfBirthController.text = formattedDate;
+    }
+
     // Cập nhật registerDonationBlood
     updateProfile(
       name: name,
       idCard: idCard.replaceAll(" ", ""),
       soDT: phoneNumber.replaceAll(" ", ""),
+      namSinh: dateOfBirth?.year,
+      ngaySinh: dateOfBirth,
     );
 
     refresh();
@@ -200,7 +228,7 @@ class RegisterDonateBloodController extends BaseModelStateful {
     nameController.dispose();
     idCardController.dispose();
     phoneNumberController.dispose();
-    namSinhController.dispose();
+    dateOfBirthController.dispose();
     diaChiController.dispose();
     emailController.dispose();
     ngheNghiepController.dispose();
@@ -215,14 +243,12 @@ class RegisterDonateBloodController extends BaseModelStateful {
   /// Method to hide the ready indicator.
   @override
   Future<void> onReady() async {
-    log("🟡 [RegisterDonateBloodController] onReady() - Màn hình sẵn sàng");
     // Implement your hide ready indicator logic here
     checkValidateProfile();
     
     // Reload profile data from authentication when screen is ready
     // This ensures data is up-to-date when returning from Profile page
     // Gọi initProfile() ngay cả khi event == null để load dữ liệu từ authentication
-    log("🟡 [RegisterDonateBloodController] onReady() - Gọi initProfile() để load dữ liệu từ authentication");
     initProfile();
 
     super.onReady();
@@ -230,11 +256,9 @@ class RegisterDonateBloodController extends BaseModelStateful {
 
   @override
   void onDidUpdateWidget() {
-    log("🟡 [RegisterDonateBloodController] onDidUpdateWidget() - Widget được update");
     // Reload profile data when widget is updated (e.g., when returning from Profile page)
     // This ensures data is up-to-date after updating profile
     // Gọi initProfile() ngay cả khi event == null để load dữ liệu mới từ authentication
-    log("🟡 [RegisterDonateBloodController] onDidUpdateWidget() - Gọi initProfile() để reload dữ liệu từ authentication");
     initProfile();
     super.onDidUpdateWidget();
   }
@@ -409,8 +433,8 @@ class RegisterDonateBloodController extends BaseModelStateful {
       List<AnswerQuestionDetail> updatedDetails) async {
     if (updatedDetails.any((e) => e.yesAnswer == true)) {
       var rs = await AppUtils.instance.showMessageConfirmCancel(
-        "Xác nhận",
-        "Một (hoặc nhiều) câu trả lời đang chọn là 'Có'\r\nBạn có muốn đăng ký ?",
+        AppLocale.confirmRegisterWithYesAnswer.translate(Get.context!),
+        AppLocale.confirmRegisterWithYesAnswerMessage.translate(Get.context!),
         context: Get.context,
       );
       return rs;
@@ -801,15 +825,20 @@ class RegisterDonateBloodController extends BaseModelStateful {
               nameController.text = citizen.fullName;
               updateProfile(name: citizen.fullName);
 
-              // Năm sinh (từ ngày sinh ddmmyyyy)
+              // Ngày sinh (từ ngày sinh ddmmyyyy)
               if (citizen.dateOfBirth != null && citizen.isValidDateOfBirth()) {
                 final dateOfBirth = citizen.getDateOfBirthAsDateTime();
                 if (dateOfBirth != null) {
-                  namSinhController.text = dateOfBirth.year.toString();
+                  final formattedDate = citizen.getFormattedDateOfBirth();
+                  if (formattedDate != null) {
+                    dateOfBirthController.text = formattedDate;
+                  }
+                  // Cập nhật profile với ngày sinh - làm tương tự như CCCD
                   updateProfile(
                     namSinh: dateOfBirth.year,
                     ngaySinh: dateOfBirth,
                   );
+                  refresh(); // Refresh UI để cập nhật
                 }
               }
 

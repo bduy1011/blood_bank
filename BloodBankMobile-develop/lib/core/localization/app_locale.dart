@@ -114,6 +114,7 @@ mixin class AppLocale {
   static const String updateInformation = 'updateInformation';
   static const String fullname = 'fullname';
   static const String birthYear = 'birthYear';
+  static const String dateOfBirth = 'dateOfBirth';
   static const String idCard = 'idCard';
   static const String phoneNumber = 'phoneNumber';
   static const String email = 'email';
@@ -143,6 +144,13 @@ mixin class AppLocale {
   static const String thankYouMessage = 'thank_you_message';
   static const String confirmDeleteAccount = 'confirm_delete_account';
   static const String deleteAccountMessage = 'delete_account_message';
+  static const String confirmLogout = 'confirm_logout';
+  static const String logoutMessage = 'logout_message';
+  static const String confirmExitRegisterDonateBlood = 'confirm_exit_register_donate_blood';
+  static const String confirmExitRegisterDonateBloodMessage = 'confirm_exit_register_donate_blood_message';
+  static const String confirmRegisterWithYesAnswer = 'confirm_register_with_yes_answer';
+  static const String confirmRegisterWithYesAnswerMessage = 'confirm_register_with_yes_answer_message';
+  static const String logoutFailed = 'logout_failed';
   static const String deleteAccountSuccess = 'delete_account_success';
   static const String deleteAccountFailed = 'delete_account_failed';
   static const String scanQRCCCD = 'scan_qr_cccd';
@@ -291,6 +299,15 @@ mixin class AppLocale {
   static const String receptionStep = 'reception_step';
   static const String receptionStepTitle = 'reception_step_title';
   static const String receptionStepDescription = 'reception_step_description';
+  static const String chooseSigningMethod = 'choose_signing_method';
+  static const String handSignature = 'hand_signature';
+  static const String digitalSignatureSmartCA = 'digital_signature_smartca';
+  static const String pleaseSignYourNameBelow = 'please_sign_your_name_below';
+  static const String signWithSmartCA = 'sign_with_smartca';
+  static const String pleaseRegisterBeforeSigning = 'please_register_before_signing';
+  static const String digitalSignatureDescription = 'digital_signature_description';
+  static const String digitalSignatureFailed = 'digital_signature_failed';
+  static const String goToSignatureScreen = 'go_to_signature_screen';
   static const String donorSignature = 'donor_signature';
   static const String measureVitalSigns = 'measure_vital_signs';
   static const String measureVitalSignsTitle = 'measure_vital_signs_title';
@@ -404,6 +421,7 @@ mixin class AppLocale {
     bloodDonationSchedule: 'Blood donation schedule',
     fullname: 'Fullname',
     birthYear: 'Birth year',
+    dateOfBirth: 'Date of birth',
     idCard: 'ID card',
     phoneNumber: 'Phone number',
     email: 'Email',
@@ -434,6 +452,13 @@ mixin class AppLocale {
         'Sincere thanks to Medcomtech Company for accompanying Cho Ray Blood Transfusion Center in voluntary blood donation activities.',
     confirmDeleteAccount: 'Confirm delete account',
     deleteAccountMessage: 'Your account will be deleted\npermanently',
+    confirmLogout: 'Confirm logout',
+    logoutMessage: 'Are you sure you want to logout?',
+    confirmExitRegisterDonateBlood: 'Confirm',
+    confirmExitRegisterDonateBloodMessage: 'Confirm exit blood donation registration screen',
+    confirmRegisterWithYesAnswer: 'Confirm',
+    confirmRegisterWithYesAnswerMessage: 'One (or more) answers are selected as "Yes"\r\nDo you want to register?',
+    logoutFailed: 'Logout failed. Please try again.',
     deleteAccountSuccess: 'Account deleted successfully',
     deleteAccountFailed: 'Failed to delete account',
     scanQRCCCD: 'Scan QR CCCD/ID Card',
@@ -578,6 +603,15 @@ mixin class AppLocale {
     receptionStep: 'Reception',
     receptionStepTitle: 'Reception - Donor Signature',
     receptionStepDescription: 'Please sign your name to confirm reception',
+    chooseSigningMethod: 'Choose signing method:',
+    handSignature: 'Hand signature',
+    digitalSignatureSmartCA: 'Digital signature SmartCA',
+    pleaseSignYourNameBelow: 'Please sign your name in the box below',
+    signWithSmartCA: 'Sign with SmartCA',
+    pleaseRegisterBeforeSigning: 'Please register before signing.',
+    digitalSignatureDescription: 'Digital signature will be performed through the SmartCA system. You will be required to authenticate to complete the signing process.',
+    digitalSignatureFailed: 'Digital signature failed',
+    goToSignatureScreen: 'Go to signature screen',
     donorSignature: 'Donor Signature',
     measureVitalSigns: 'Measure Vital Signs',
     measureVitalSignsTitle: 'Measure Vital Signs',
@@ -691,6 +725,7 @@ mixin class AppLocale {
     bloodDonationSchedule: 'Lịch hiến máu',
     fullname: 'Họ và tên',
     birthYear: 'Năm sinh',
+    dateOfBirth: 'Ngày sinh',
     idCard: 'CCCD/Căn cước',
     phoneNumber: 'Số điện thoại',
     email: 'Email',
@@ -721,6 +756,13 @@ mixin class AppLocale {
         'Chân thành cảm ơn Công ty Medcomtech đã đồng hành cùng Trung tâm Truyền máu Chợ Rẫy trong hoạt động vận động hiến máu tình nguyện.',
     confirmDeleteAccount: 'Xác nhận xóa tài khoản',
     deleteAccountMessage: 'Tài khoản của bạn sẽ bị xóa\nvĩnh viễn',
+    confirmLogout: 'Xác nhận đăng xuất',
+    logoutMessage: 'Bạn có chắc chắn muốn đăng xuất?',
+    confirmExitRegisterDonateBlood: 'Xác nhận',
+    confirmExitRegisterDonateBloodMessage: 'Xác nhận thoát màn hình đăng ký hiến máu',
+    confirmRegisterWithYesAnswer: 'Xác nhận',
+    confirmRegisterWithYesAnswerMessage: 'Một (hoặc nhiều) câu trả lời đang chọn là \'Có\'\r\nBạn có muốn đăng ký ?',
+    logoutFailed: 'Đăng xuất thất bại. Vui lòng thử lại.',
     deleteAccountSuccess: 'Xóa tài khoản thành công',
     deleteAccountFailed: 'Xóa tài khoản thất bại',
     scanQRCCCD: 'Quét mã QR CCCD/Căn cước',
@@ -865,6 +907,15 @@ mixin class AppLocale {
     receptionStep: 'Tiếp nhận',
     receptionStepTitle: 'Tiếp nhận - Người hiến máu ký tên',
     receptionStepDescription: 'Vui lòng ký tên của bạn để xác nhận tiếp nhận',
+    chooseSigningMethod: 'Chọn phương thức ký:',
+    handSignature: 'Chữ ký tay',
+    digitalSignatureSmartCA: 'Chữ ký số SmartCA',
+    pleaseSignYourNameBelow: 'Vui lòng ký tên của bạn vào ô bên dưới',
+    signWithSmartCA: 'Ký số bằng SmartCA',
+    pleaseRegisterBeforeSigning: 'Vui lòng đăng ký trước khi ký số.',
+    digitalSignatureDescription: 'Chữ ký số sẽ được thực hiện qua hệ thống SmartCA. Bạn sẽ được yêu cầu xác thực để hoàn tất quá trình ký số.',
+    digitalSignatureFailed: 'Ký số thất bại',
+    goToSignatureScreen: 'Vào màn ký tên',
     donorSignature: 'Chữ ký người hiến máu',
     measureVitalSigns: 'Đo chỉ số sinh tồn',
     measureVitalSignsTitle: 'Đo chỉ số sinh tồn',

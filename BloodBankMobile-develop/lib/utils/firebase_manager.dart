@@ -27,8 +27,12 @@ class FireBaseManager {
   ///
 
   void getDataAppVersion(Function(AppVersion?)? callback) async {
-    ///
-
+    // TẠM THỜI TẮT Firebase để tránh crash (API Key không đúng)
+    // TODO: Bật lại khi có GoogleService-Info.plist đúng
+    callback?.call(null);
+    return;
+    
+    /*
     try {
       final firebaseApp = Firebase.app();
       final rtdb = FirebaseDatabase.instanceFor(
@@ -49,6 +53,7 @@ class FireBaseManager {
       print(t);
       // TODO
     }
+    */
   }
 
   ///
@@ -82,6 +87,12 @@ class FireBaseManager {
 
   static bool isFlutterLocalNotificationsInitialized = false;
   static Future<void> registerNotification(VoidCallback? complete) async {
+    // TẠM THỜI TẮT Firebase Messaging để tránh crash
+    // TODO: Bật lại khi có GoogleService-Info.plist đúng
+    complete?.call();
+    return;
+    
+    /*
     NotificationSettings settings =
         await FirebaseMessaging.instance.requestPermission(
       alert: true,
@@ -110,6 +121,7 @@ class FireBaseManager {
     }
     onTokenRefresh((token) {});
     complete?.call();
+    */
   }
 
   static void onTokenRefresh(Function(String) complete) async {
@@ -133,8 +145,13 @@ class FireBaseManager {
   }
 
   static Future<void> onTerminalState(VoidCallback complete) async {
-    await Firebase.initializeApp();
-    await FirebaseMessaging.instance.getInitialMessage();
+    try {
+      await Firebase.initializeApp();
+      await FirebaseMessaging.instance.getInitialMessage();
+    } catch (e) {
+      // Bỏ qua lỗi Firebase nếu có
+      debugPrint('Firebase onTerminalState error: $e');
+    }
     complete.call();
   }
 

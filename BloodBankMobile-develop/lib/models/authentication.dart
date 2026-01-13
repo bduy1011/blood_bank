@@ -9,6 +9,7 @@ class Authentication {
   String? name;
   String? phoneNumber;
   String? cmnd;
+  DateTime? ngaySinh;
   int? status;
   int? appRole;
   BloodDonor? dmNguoiHienMau;
@@ -26,6 +27,7 @@ class Authentication {
     this.dmNguoiHienMau,
     this.phoneNumber,
     this.cmnd,
+    this.ngaySinh,
     this.soLanHienMau,
     this.ngayHienMauGanNhat,
     this.duongTinhGanNhat,
@@ -42,6 +44,7 @@ class Authentication {
     result.addAll({'appRole': appRole});
     result.addAll({'phoneNumber': phoneNumber});
     result.addAll({'cmnd': cmnd});
+    result.addAll({'ngaySinh': ngaySinh?.toIso8601String()});
     if (dmNguoiHienMau != null) {
       result.addAll({'dmNguoiHienMau': dmNguoiHienMau!.toJson()});
     }
@@ -63,6 +66,9 @@ class Authentication {
     appRole = map['appRole']?.toInt() ?? 0;
     phoneNumber = map['phoneNumber'];
     cmnd = map['cmnd'] ?? map['idCardNr'];
+    ngaySinh = map['ngaySinh'] != null
+        ? DateTime.parse(map['ngaySinh'])
+        : null;
     dmNguoiHienMau = map['dmNguoiHienMau'] != null
         ? BloodDonor.fromJson(map['dmNguoiHienMau'])
         : null;

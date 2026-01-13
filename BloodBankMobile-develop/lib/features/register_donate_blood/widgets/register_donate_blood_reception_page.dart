@@ -99,7 +99,7 @@ class _RegisterDonateBloodReceptionPageState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Chọn phương thức ký:',
+            AppLocale.chooseSigningMethod.translate(context),
             style: context.myTheme.textThemeT1.title.copyWith(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -110,7 +110,7 @@ class _RegisterDonateBloodReceptionPageState
             children: [
               Expanded(
                 child: _buildMethodOption(
-                  title: 'Chữ ký tay',
+                  title: AppLocale.handSignature.translate(context),
                   icon: Icons.edit,
                   isSelected: !_useSmartCA,
                   onTap: () {
@@ -123,7 +123,7 @@ class _RegisterDonateBloodReceptionPageState
               const SizedBox(width: 12),
               Expanded(
                 child: _buildMethodOption(
-                  title: 'Chữ ký số SmartCA',
+                  title: AppLocale.digitalSignatureSmartCA.translate(context),
                   icon: Icons.verified_user,
                   isSelected: _useSmartCA,
                   onTap: () {
@@ -190,7 +190,7 @@ class _RegisterDonateBloodReceptionPageState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Vui lòng ký tên của bạn vào ô bên dưới',
+          AppLocale.pleaseSignYourNameBelow.translate(context),
           style: context.myTheme.textThemeT1.body.copyWith(
             fontSize: 14,
             color: Colors.grey[700],
@@ -275,7 +275,7 @@ class _RegisterDonateBloodReceptionPageState
               Icon(Icons.info_outline, color: Colors.blue[700]),
               const SizedBox(width: 8),
               Text(
-                'Chữ ký số SmartCA',
+                AppLocale.digitalSignatureSmartCA.translate(context),
                 style: context.myTheme.textThemeT1.title.copyWith(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -286,8 +286,7 @@ class _RegisterDonateBloodReceptionPageState
           ),
           const SizedBox(height: 8),
           Text(
-            'Chữ ký số sẽ được thực hiện qua hệ thống SmartCA. '
-            'Bạn sẽ được yêu cầu xác thực để hoàn tất quá trình ký số.',
+            AppLocale.digitalSignatureDescription.translate(context),
             style: context.myTheme.textThemeT1.body.copyWith(
               fontSize: 14,
               color: Colors.blue[900],
@@ -330,7 +329,7 @@ class _RegisterDonateBloodReceptionPageState
                   const SizedBox(width: 8),
                   Text(
                     _useSmartCA
-                        ? 'Ký số bằng SmartCA'
+                        ? AppLocale.signWithSmartCA.translate(context)
                         : AppLocale.next.translate(context),
                     style: context.myTheme.textThemeT1.title.copyWith(
                       color: Colors.white,
@@ -399,7 +398,7 @@ class _RegisterDonateBloodReceptionPageState
         final response = await widget.state.registerDonateBlood();
         if (response == null) {
           AppUtils.instance.showToast(
-            'Vui lòng đăng ký trước khi ký số.',
+            AppLocale.pleaseRegisterBeforeSigning.translate(context),
           );
           return;
         }
@@ -432,7 +431,7 @@ class _RegisterDonateBloodReceptionPageState
         widget.state.updateNextPage(5);
       } else {
         AppUtils.instance.showToast(
-          result?['message'] ?? 'Ký số thất bại',
+          result?['message'] ?? AppLocale.digitalSignatureFailed.translate(context),
         );
       }
     } catch (e) {

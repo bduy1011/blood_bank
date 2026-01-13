@@ -3,7 +3,6 @@ import 'package:blood_donation/core/localization/app_locale.dart';
 import 'package:blood_donation/models/ward.dart';
 import 'package:blood_donation/utils/extension/context_ext.dart';
 import 'package:blood_donation/utils/extension/datetime_extension.dart';
-import 'package:blood_donation/utils/extension/string_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -70,15 +69,16 @@ class _RegisterDonateBloodPageSecondState
                       },
                       isRequired: true,
                     ),
-                    _buildTextField(
-                      label: "Năm sinh",
+                    _buildDateOfBirthPicker(
+                      label: AppLocale.dateOfBirth.translate(context),
                       isEnabled: widget
                               .state.appCenter.authentication?.dmNguoiHienMau ==
                           null,
-                      controller: widget.state.namSinhController,
-                      onChanged: (value) {
+                      controller: widget.state.dateOfBirthController,
+                      onDateSelected: (dateTime) {
                         widget.state.updateProfile(
-                          namSinh: value.toIntOrNull,
+                          namSinh: dateTime.year,
+                          ngaySinh: dateTime,
                         );
                       },
                       isRequired: true,
@@ -292,7 +292,7 @@ class _RegisterDonateBloodPageSecondState
                     color: AppColor.mainColor,
                   ),
                   label: Text(
-                    'Vào màn ký tên',
+                    AppLocale.goToSignatureScreen.translate(context),
                     style: context.myTheme.textThemeT1.title
                         .copyWith(color: AppColor.mainColor),
                   ),
@@ -488,6 +488,107 @@ class _RegisterDonateBloodPageSecondState
         ),
         onChanged: onChanged,
         maxLength: maxLength,
+      ),
+    );
+  }
+
+  Widget _buildDateOfBirthPicker({
+    required String label,
+    required TextEditingController controller,
+    required Function(DateTime) onDateSelected,
+    bool isRequired = false,
+    bool isEnabled = true,
+  }) {
+    // Sử dụng ValueListenableBuilder để tự động rebuild khi controller text thay đổi
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: ValueListenableBuilder<TextEditingValue>(
+        valueListenable: controller,
+        builder: (context, value, child) {
+          return TextFormField(
+            controller: controller,
+            enabled: isEnabled,
+            readOnly: true,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: isRequired
+                ? (value) {
+                    if (isRequired && (value?.trim().isEmpty ?? true)) {
+                      return "${AppLocale.formRequiredNameError.translate(context).replaceAll('họ tên', label)}";
+                    }
+                    return null;
+                  }
+                : null,
+            decoration: InputDecoration(
+              label: label.isEmpty
+                  ? null
+                  : RichText(
+                      text: TextSpan(
+                        text: label,
+                        style: const TextStyle(
+                          color: Colors.black87,
+                          fontSize: 14,
+                        ),
+                        children: [
+                          if (isRequired)
+                            const TextSpan(
+                              text: " *",
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 14,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+              labelStyle: const TextStyle(color: Colors.black),
+              suffixIcon: const Icon(Icons.calendar_today, color: Colors.red),
+              filled: true,
+              fillColor: isEnabled == true ? Colors.white : Colors.grey[200],
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              errorBorder: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+                borderSide: BorderSide(color: Colors.red),
+              ),
+              errorStyle: const TextStyle(color: Colors.red, fontSize: 12),
+            ),
+            onTap: isEnabled ? () async {
+              DateTime? initialDate;
+              if (controller.text.isNotEmpty) {
+                try {
+                  final parts = controller.text.split('/');
+                  if (parts.length == 3) {
+                    final day = int.parse(parts[0]);
+                    final month = int.parse(parts[1]);
+                    final year = int.parse(parts[2]);
+                    initialDate = DateTime(year, month, day);
+                  }
+                } catch (e) {
+                  // Ignore parse errors
+                }
+              }
+              initialDate ??= DateTime.now().subtract(const Duration(days: 365 * 25)); // Default to 25 years ago
+              
+              final DateTime? pickedDate = await showDatePicker(
+                context: context,
+                initialDate: initialDate,
+                firstDate: DateTime(1900),
+                lastDate: DateTime.now(),
+                initialDatePickerMode: DatePickerMode.day,
+              );
+              if (pickedDate != null) {
+                setState(() {
+                  final day = pickedDate.day.toString().padLeft(2, '0');
+                  final month = pickedDate.month.toString().padLeft(2, '0');
+                  final year = pickedDate.year.toString();
+                  controller.text = '$day/$month/$year';
+                  onDateSelected(pickedDate);
+                });
+              }
+            } : null,
+          );
+        },
       ),
     );
   }

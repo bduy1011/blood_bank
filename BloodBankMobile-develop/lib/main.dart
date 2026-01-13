@@ -17,27 +17,61 @@ import 'package:toastification/toastification.dart';
 import 'app/app_util/app_center.dart';
 import 'app/config/routes.dart';
 import 'core/storage/local_storage.dart';
-import 'utils/widget/loading_widget.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  configureDependencies(AppConfig.prod());
-
+  // Wrap toàn bộ trong try-catch để tránh crash khi khởi động
   try {
-    await Firebase.initializeApp();
-  } catch (_) {}
+    WidgetsFlutterBinding.ensureInitialized();
+    
+    // Configure dependencies
+    try {
+      configureDependencies(AppConfig.prod());
+    } catch (e) {
+      debugPrint('Error configuring dependencies: $e');
+    }
 
-  try {
-    await LocalStorage().init();
-  } catch (_) {}
+    // Firebase initialization với API key hợp lệ tạm thời
+    // API key hiện tại là dummy key (đúng format nhưng không hoạt động)
+    // TODO: Thay bằng API key thật từ Firebase Console khi cần
+    try {
+      await Firebase.initializeApp();
+    } catch (e) {
+      // Bỏ qua lỗi Firebase nếu có
+      debugPrint('Firebase initialization skipped: $e');
+    }
 
-  try {
-    BackendProvider().create(
-      url: getIt<AppConfig>().backendUrl,
+    // Initialize LocalStorage
+    try {
+      await LocalStorage().init();
+    } catch (e) {
+      debugPrint('LocalStorage init error: $e');
+    }
+
+    // Initialize BackendProvider
+    try {
+      BackendProvider().create(
+        url: getIt<AppConfig>().backendUrl,
+      );
+    } catch (e) {
+      debugPrint('BackendProvider create error: $e');
+    }
+
+    // Run app
+    runApp(const MainPage());
+  } catch (e, stackTrace) {
+    // Nếu có lỗi nghiêm trọng, vẫn cố chạy app với error screen
+    debugPrint('Fatal error in main: $e');
+    debugPrint('Stack trace: $stackTrace');
+    runApp(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Text('App initialization error: $e'),
+          ),
+        ),
+      ),
     );
-  } catch (_) {}
-
-  runApp(const MainPage());
+  }
 }
 
 // void main() async {

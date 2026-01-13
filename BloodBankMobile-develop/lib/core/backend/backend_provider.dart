@@ -246,12 +246,40 @@ class BackendProvider {
           _localStorage.authentication?.accessToken;
 
       ///
-      if (authenticationResponse?.data!.accessToken?.isNotEmpty == true) {
-        await _localStorage.saveAuthentication(
-            authentication: authenticationResponse!.data!);
-        GetIt.instance<AppCenter>()
-            .setAuthentication(authenticationResponse.data);
-        return authenticationResponse.data;
+      final serverAuth = authenticationResponse!.data;
+      if (serverAuth != null && serverAuth.accessToken?.isNotEmpty == true) {
+        // Merge dữ liệu local với dữ liệu từ server để không mất dữ liệu đã cập nhật
+        final localAuth = _localStorage.authentication;
+        if (localAuth != null) {
+          // Giữ lại các field đã cập nhật local nếu server không có
+          if (serverAuth.cmnd == null || serverAuth.cmnd!.isEmpty) {
+            serverAuth.cmnd = localAuth.cmnd;
+          }
+          if (serverAuth.ngaySinh == null) {
+            serverAuth.ngaySinh = localAuth.ngaySinh;
+          }
+          if (serverAuth.name == null || serverAuth.name!.isEmpty) {
+            serverAuth.name = localAuth.name;
+          }
+          // Merge dmNguoiHienMau nếu có
+          if (localAuth.dmNguoiHienMau != null) {
+            if (serverAuth.dmNguoiHienMau == null) {
+              serverAuth.dmNguoiHienMau = localAuth.dmNguoiHienMau;
+            } else {
+              // Merge các field từ local vào dmNguoiHienMau nếu server không có
+              if (serverAuth.dmNguoiHienMau!.ngaySinh == null) {
+                serverAuth.dmNguoiHienMau!.ngaySinh = localAuth.dmNguoiHienMau!.ngaySinh;
+              }
+              if (serverAuth.dmNguoiHienMau!.cmnd == null || serverAuth.dmNguoiHienMau!.cmnd!.isEmpty) {
+                serverAuth.dmNguoiHienMau!.cmnd = localAuth.dmNguoiHienMau!.cmnd;
+              }
+            }
+          }
+        }
+        
+        await _localStorage.saveAuthentication(authentication: serverAuth);
+        GetIt.instance<AppCenter>().setAuthentication(serverAuth);
+        return serverAuth;
       }
     } else {
       if (authenticationResponse?.message != null) {
